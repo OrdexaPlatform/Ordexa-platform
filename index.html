@@ -135,7 +135,6 @@
             align-items: center;
             gap: 1rem;
         }
-        /* شعار الهيدر - صورة جديدة */
         .header-logo-img {
             height: 44px;
             width: auto;
@@ -206,7 +205,6 @@
             position: relative;
             z-index: 3;
         }
-        /* الشعار الكبير أعلى العنوان */
         .hero-logo {
             margin-bottom: 1.5rem;
         }
@@ -272,6 +270,10 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
+        }
+        .stat-item p {
+            font-weight: 500;
+            color: var(--slate-gray);
         }
 
         .services-grid, .work-grid, .templates-grid {
@@ -458,6 +460,13 @@
             padding: 0.35rem 0.8rem;
             border-radius: 40px;
         }
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.75rem;
+        }
         .fade-up {
             opacity: 0;
             transform: translateY(35px);
@@ -479,7 +488,6 @@
     <header>
         <div class="container navbar">
             <div class="logo-area">
-                <!-- شعار الهيدر (صورة) -->
                 <img class="header-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Logo">
                 <button class="lang-header-btn" id="langToggleHeader">English</button>
             </div>
@@ -502,7 +510,6 @@
             <div class="floating-shape shape2"></div>
             <div class="floating-shape shape3"></div>
             <div class="container hero-content">
-                <!-- الشعار الكبير أعلى العنوان (صورة) -->
                 <div class="hero-logo">
                     <img class="hero-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Brand">
                 </div>
@@ -544,32 +551,31 @@
             </div>
             <div class="pricing-grid">
                 <div class="pricing-card">
-                    <div class="offer-badge">🔥 عرض خاص</div>
+                    <div class="offer-badge" data-i18n="offer_badge1">🔥 عرض خاص</div>
                     <h3 data-i18n="plan_monthly">اشتراك شهري</h3>
                     <div class="price">499 <small>ج.م / شهر</small></div>
-                    <div class="old-price">السعر العادي 699 ج.م</div>
-                    <div class="free-trial">⭐ أول 5 أيام مجانًا تمامًا</div>
+                    <div class="old-price" data-i18n="old_price_monthly">السعر العادي 699 ج.م</div>
+                    <div class="free-trial" data-i18n="free_trial_text">⭐ أول 5 أيام مجانًا تمامًا</div>
                     <p data-i18n="plan_monthly_desc">منيو رقمي كامل، دعم فني، تحديثات غير محدودة.</p>
                     <a href="#contact" class="btn btn-primary" style="margin-top: 1rem;" data-i18n="btn_start">ابدأ تجربة 5 أيام</a>
                 </div>
                 <div class="pricing-card">
-                    <div class="offer-badge">🎁 خصم 30% لمدة 3 شهور</div>
+                    <div class="offer-badge" data-i18n="offer_badge2">🎁 خصم 30% لمدة 3 شهور</div>
                     <h3 data-i18n="plan_quarter">الاشتراك الأول (3 شهور)</h3>
                     <div class="price">1048 <small>ج.م / 3 شهور</small></div>
-                    <div class="old-price">الدفع العادي 1497 ج.م</div>
+                    <div class="old-price" data-i18n="old_price_quarter">الدفع العادي 1497 ج.م</div>
                     <p data-i18n="plan_quarter_desc">وفر 449 ج.م عند الاشتراك لأول 3 أشهر، شامل كل المميزات.</p>
                     <a href="#contact" class="btn btn-offer" style="margin-top: 1rem;" data-i18n="btn_offer">احصل على الخصم الآن</a>
                 </div>
                 <div class="pricing-card">
                     <h3 data-i18n="plan_custom">باقة احترافية مخصصة</h3>
-                    <div class="price">تواصل معنا</div>
+                    <div class="price" data-i18n="custom_price">تواصل معنا</div>
                     <p data-i18n="plan_custom_desc">تصميم كامل الهوية، ربط متعدد القنوات، لوحة تحكم متقدمة.</p>
                     <a href="#contact" class="btn btn-outline" style="margin-top: 1rem;" data-i18n="btn_custom">طلب عرض سعر</a>
                 </div>
             </div>
         </section>
 
-        <!-- أعمالنا المنفذة -->
         <section class="container" id="our-work">
             <div class="section-title">
                 <h2 data-i18n="work_title">أعمالنا المنفذة – نماذج حية لمشاريع سابقة</h2>
@@ -578,26 +584,25 @@
             <div class="work-grid">
                 <div class="work-card">
                     <div class="work-img-placeholder">🍽️</div>
-                    <h3>منيو إلكتروني لمطعم Buffalo Bono – طلب مباشر للمطاعم والكافيهات</h3>
-                    <p>نظام منيو رقمي متكامل يتيح للزبائن تصفح القائمة وطلب الأطباق بنقرة زر، مع إرسال الطلبات مباشرة للمطعم عبر واتساب وتليجرام.</p>
-                    <a href="https://rabeeamohamedmohamed-ops.github.io/ordertest/" target="_blank" class="work-link">🍕 جرب منيو المطعم →</a>
+                    <h3 data-i18n="work1_title">منيو إلكتروني لمطعم Buffalo Bono – طلب مباشر للمطاعم والكافيهات</h3>
+                    <p data-i18n="work1_desc">نظام منيو رقمي متكامل يتيح للزبائن تصفح القائمة وطلب الأطباق بنقرة زر، مع إرسال الطلبات مباشرة للمطعم عبر واتساب وتليجرام.</p>
+                    <a href="https://rabeeamohamedmohamed-ops.github.io/ordertest/" target="_blank" class="work-link" data-i18n="work1_link">🍕 جرب منيو المطعم →</a>
                 </div>
                 <div class="work-card">
                     <div class="work-img-placeholder">🎧</div>
-                    <h3>لاندينج بيج – سلة مشتريات متكاملة مع واتساب</h3>
-                    <p>صفحة هبوط احترافية لمنتج إلكتروني. يقوم العميل باختيار الكمية ويتم إرسال الطلب بالتفاصيل الكاملة إلى صاحب المنتج عبر واتساب.</p>
-                    <a href="https://rabeeamohamedmohamed-ops.github.io/Landing-page-test/" target="_blank" class="work-link">📱 تجربة صفحة المنتج →</a>
+                    <h3 data-i18n="work2_title">لاندينج بيج – سلة مشتريات متكاملة مع واتساب</h3>
+                    <p data-i18n="work2_desc">صفحة هبوط احترافية لمنتج إلكتروني. يقوم العميل باختيار الكمية ويتم إرسال الطلب بالتفاصيل الكاملة إلى صاحب المنتج عبر واتساب.</p>
+                    <a href="https://rabeeamohamedmohamed-ops.github.io/Landing-page-test/" target="_blank" class="work-link" data-i18n="work2_link">📱 تجربة صفحة المنتج →</a>
                 </div>
                 <div class="work-card">
                     <div class="work-img-placeholder">📦</div>
-                    <h3>نظام توظيف متكامل – منصة توظيف إلكترونية لشركة طلبات (Talabat Careers)</h3>
-                    <p>منصة توظيف متكاملة تسمح للمتقدمين بإرسال بياناتهم ومستنداتهم مباشرة للإدارة مع جداول تسعير ديناميكية وشروط قبول فورية.</p>
-                    <a href="https://rabeeamohamedmohamed-ops.github.io/talabat-form/" target="_blank" class="work-link">📄 تجربة نظام التوظيف →</a>
+                    <h3 data-i18n="work3_title">نظام توظيف متكامل – منصة توظيف إلكترونية لشركة طلبات (Talabat Careers)</h3>
+                    <p data-i18n="work3_desc">منصة توظيف متكاملة تسمح للمتقدمين بإرسال بياناتهم ومستنداتهم مباشرة للإدارة مع جداول تسعير ديناميكية وشروط قبول فورية.</p>
+                    <a href="https://rabeeamohamedmohamed-ops.github.io/talabat-form/" target="_blank" class="work-link" data-i18n="work3_link">📄 تجربة نظام التوظيف →</a>
                 </div>
             </div>
         </section>
 
-        <!-- تيمبلتات جاهزة -->
         <section class="container" id="templates">
             <div class="section-title">
                 <h2 data-i18n="templates_title">تيمبلتات جاهزة للاستخدام الفوري</h2>
@@ -605,24 +610,24 @@
             </div>
             <div class="templates-grid">
                 <div class="template-card">
-                    <div class="template-badge">متجر إلكتروني</div>
+                    <div class="template-badge" data-i18n="template_badge1">متجر إلكتروني</div>
                     <div class="work-img-placeholder">🛍️ DOLA STORE</div>
-                    <h3>Ordexa-Commerce – متجر أزياء إلكتروني متكامل</h3>
-                    <p>تيمبلت متجر أزياء احترافي يدعم عرض المنتجات، نظام تقييمات، سلة مشتريات، وعروض خاصة. تصميم متجاوب بالكامل.</p>
-                    <a href="https://ordexaplatform.github.io/Ordexa-Commerce/" target="_blank" class="template-link">🛒 معاينة المتجر →</a>
+                    <h3 data-i18n="template1_title">Ordexa-Commerce – متجر أزياء إلكتروني متكامل</h3>
+                    <p data-i18n="template1_desc">تيمبلت متجر أزياء احترافي يدعم عرض المنتجات، نظام تقييمات، سلة مشتريات، وعروض خاصة. تصميم متجاوب بالكامل.</p>
+                    <a href="https://ordexaplatform.github.io/Ordexa-Commerce/" target="_blank" class="template-link" data-i18n="template1_link">🛒 معاينة المتجر →</a>
                 </div>
                 <div class="template-card">
-                    <div class="template-badge">منصة تعليمية</div>
+                    <div class="template-badge" data-i18n="template_badge2">منصة تعليمية</div>
                     <div class="work-img-placeholder">🎓 Ordexa Edu</div>
-                    <h3>Ordexa-Edu-Platform – منصة كورسات أونلاين متكاملة</h3>
-                    <p>منصة تعليمية متكاملة مع نظام دفع إلكتروني عبر Visa/Mastercard، إحصائيات دقيقة، وعرض الكورسات بتصنيفاتها.</p>
-                    <a href="https://ordexaplatform.github.io/Ordexa-Edu-Platform/" target="_blank" class="template-link">📚 معاينة المنصة →</a>
+                    <h3 data-i18n="template2_title">Ordexa-Edu-Platform – منصة كورسات أونلاين متكاملة</h3>
+                    <p data-i18n="template2_desc">منصة تعليمية متكاملة مع نظام دفع إلكتروني عبر Visa/Mastercard، إحصائيات دقيقة، وعرض الكورسات بتصنيفاتها.</p>
+                    <a href="https://ordexaplatform.github.io/Ordexa-Edu-Platform/" target="_blank" class="template-link" data-i18n="template2_link">📚 معاينة المنصة →</a>
                 </div>
             </div>
         </section>
 
         <div class="developer-card" style="margin: 2rem 1.5rem;">
-            <h3>المهندس <span>ربيع الباز</span></h3>
+            <h3 data-i18n="dev_title">المهندس <span>ربيع الباز</span></h3>
             <p data-i18n="dev_desc">خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة في تطوير حلول المطاعم الرقمية، المتاجر الإلكترونية، وأنظمة التوظيف.</p>
             <p style="margin-top: 0.8rem;">📞 01120687989  |  🌐 Ordexa Platform</p>
         </div>
@@ -632,9 +637,9 @@
                 <h2 data-i18n="why_title">لماذا تختار منصة Ordexa مع المهندس ربيع الباز؟</h2>
             </div>
             <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px,1fr));">
-                <div class="service-card"><span>⚡</span><h3>تنفيذ فوري</h3><p>خلال 24 ساعة من استلام بياناتك.</p></div>
-                <div class="service-card"><span>🎯</span><h3>تصميم احترافي</h3><p>واجهات مستخدم عصرية ومقنعة.</p></div>
-                <div class="service-card"><span>🔄</span><h3>دعم مستمر</h3><p>تحديثات وتعديلات مجانية أول 3 شهور.</p></div>
+                <div class="service-card"><span>⚡</span><h3 data-i18n="why1">تنفيذ فوري</h3><p data-i18n="why1_desc">خلال 24 ساعة من استلام بياناتك.</p></div>
+                <div class="service-card"><span>🎯</span><h3 data-i18n="why2">تصميم احترافي</h3><p data-i18n="why2_desc">واجهات مستخدم عصرية ومقنعة.</p></div>
+                <div class="service-card"><span>🔄</span><h3 data-i18n="why3">دعم مستمر</h3><p data-i18n="why3_desc">تحديثات وتعديلات مجانية أول 3 شهور.</p></div>
             </div>
         </section>
 
@@ -653,11 +658,11 @@
                 <img class="footer-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Platform">
             </div>
             <div class="footer-links">
-                <a href="#home">الرئيسية</a>
-                <a href="#services">خدماتنا</a>
-                <a href="#pricing">الباقات</a>
-                <a href="#our-work">أعمالنا</a>
-                <a href="#templates">تيمبلتات</a>
+                <a href="#home" data-i18n="nav_home">الرئيسية</a>
+                <a href="#services" data-i18n="nav_services">خدماتنا</a>
+                <a href="#pricing" data-i18n="nav_pricing">الباقات</a>
+                <a href="#our-work" data-i18n="nav_work">أعمالنا</a>
+                <a href="#templates" data-i18n="nav_templates">تيمبلتات</a>
             </div>
             <div class="social-icons">
                 <a href="https://www.facebook.com/ordexaplatform" target="_blank">
@@ -666,8 +671,8 @@
                 <a href="tel:01120687989" class="phone-number">📞 01120687989</a>
             </div>
         </div>
-        <div class="container copyright" style="text-align: center; margin-top: 2rem;">
-            <p>© 2026 Ordexa Platform – جميع الحقوق محفوظة. تصميم وتطوير المهندس ربيع الباز.</p>
+        <div class="container copyright">
+            <p data-i18n="copyright">© 2026 Ordexa Platform – جميع الحقوق محفوظة. تصميم وتطوير المهندس ربيع الباز.</p>
         </div>
     </footer>
 
@@ -685,44 +690,71 @@
                 serv3: "متاجر إلكترونية متكاملة", serv3_desc: "نظام تسوق متكامل مع بوابات دفع.",
                 serv4: "طلبات فورية عبر واتساب وتليجرام", serv4_desc: "تفاصيل كاملة للطلب تصل لحسابك فوراً.",
                 pricing_title: "باقات تناسب كل الأعمال – أسعار بالجنيه المصري", pricing_sub: "تجربة مجانية 5 أيام، وخصم 30% على أول 3 اشتراكات شهرية",
-                plan_monthly: "اشتراك شهري", plan_monthly_desc: "منيو رقمي كامل، دعم فني، تحديثات غير محدودة.",
-                plan_quarter: "الاشتراك الأول (3 شهور)", plan_quarter_desc: "وفر 449 ج.م عند الاشتراك لأول 3 أشهر، شامل كل المميزات.",
-                plan_custom: "باقة احترافية مخصصة", plan_custom_desc: "تصميم كامل الهوية، ربط متعدد القنوات، لوحة تحكم متقدمة.",
+                offer_badge1: "🔥 عرض خاص", plan_monthly: "اشتراك شهري", old_price_monthly: "السعر العادي 699 ج.م", free_trial_text: "⭐ أول 5 أيام مجانًا تمامًا", plan_monthly_desc: "منيو رقمي كامل، دعم فني، تحديثات غير محدودة.",
+                offer_badge2: "🎁 خصم 30% لمدة 3 شهور", plan_quarter: "الاشتراك الأول (3 شهور)", old_price_quarter: "الدفع العادي 1497 ج.م", plan_quarter_desc: "وفر 449 ج.م عند الاشتراك لأول 3 أشهر، شامل كل المميزات.",
+                plan_custom: "باقة احترافية مخصصة", custom_price: "تواصل معنا", plan_custom_desc: "تصميم كامل الهوية، ربط متعدد القنوات، لوحة تحكم متقدمة.",
                 btn_start: "ابدأ تجربة 5 أيام", btn_offer: "احصل على الخصم الآن", btn_custom: "طلب عرض سعر",
                 work_title: "أعمالنا المنفذة – نماذج حية لمشاريع سابقة", work_sub: "نقدم لعملائنا حلولاً رقمية مبتكرة تخدم احتياجات السوق المصري.",
+                work1_title: "منيو إلكتروني لمطعم Buffalo Bono – طلب مباشر للمطاعم والكافيهات", work1_desc: "نظام منيو رقمي متكامل يتيح للزبائن تصفح القائمة وطلب الأطباق بنقرة زر، مع إرسال الطلبات مباشرة للمطعم عبر واتساب وتليجرام.", work1_link: "🍕 جرب منيو المطعم →",
+                work2_title: "لاندينج بيج – سلة مشتريات متكاملة مع واتساب", work2_desc: "صفحة هبوط احترافية لمنتج إلكتروني. يقوم العميل باختيار الكمية ويتم إرسال الطلب بالتفاصيل الكاملة إلى صاحب المنتج عبر واتساب.", work2_link: "📱 تجربة صفحة المنتج →",
+                work3_title: "نظام توظيف متكامل – منصة توظيف إلكترونية لشركة طلبات (Talabat Careers)", work3_desc: "منصة توظيف متكاملة تسمح للمتقدمين بإرسال بياناتهم ومستنداتهم مباشرة للإدارة مع جداول تسعير ديناميكية وشروط قبول فورية.", work3_link: "📄 تجربة نظام التوظيف →",
                 templates_title: "تيمبلتات جاهزة للاستخدام الفوري", templates_sub: "قوالب احترافية جاهزة لمتجرك الإلكتروني أو منصتك التعليمية. استخدمها فوراً وابدأ نشاطك التجاري اليوم.",
-                dev_desc: "خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة في تطوير حلول المطاعم الرقمية، المتاجر الإلكترونية، وأنظمة التوظيف.",
+                template_badge1: "متجر إلكتروني", template1_title: "Ordexa-Commerce – متجر أزياء إلكتروني متكامل", template1_desc: "تيمبلت متجر أزياء احترافي يدعم عرض المنتجات، نظام تقييمات، سلة مشتريات، وعروض خاصة. تصميم متجاوب بالكامل.", template1_link: "🛒 معاينة المتجر →",
+                template_badge2: "منصة تعليمية", template2_title: "Ordexa-Edu-Platform – منصة كورسات أونلاين متكاملة", template2_desc: "منصة تعليمية متكاملة مع نظام دفع إلكتروني عبر Visa/Mastercard، إحصائيات دقيقة، وعرض الكورسات بتصنيفاتها.", template2_link: "📚 معاينة المنصة →",
+                dev_title: "المهندس <span>ربيع الباز</span>", dev_desc: "خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة في تطوير حلول المطاعم الرقمية، المتاجر الإلكترونية، وأنظمة التوظيف.",
                 why_title: "لماذا تختار منصة Ordexa مع المهندس ربيع الباز؟",
-                cta_title: "لا تنتظر – ابدأ تجربتك المجانية لمدة 5 أيام", cta_sub: "احصل على موقع احترافي أو منيو إلكتروني كامل مع خصم 30% على أول 3 أشهر.", cta_btn: "اطلب ديمو الآن ←"
+                why1: "تنفيذ فوري", why1_desc: "خلال 24 ساعة من استلام بياناتك.",
+                why2: "تصميم احترافي", why2_desc: "واجهات مستخدم عصرية ومقنعة.",
+                why3: "دعم مستمر", why3_desc: "تحديثات وتعديلات مجانية أول 3 شهور.",
+                cta_title: "لا تنتظر – ابدأ تجربتك المجانية لمدة 5 أيام", cta_sub: "احصل على موقع احترافي أو منيو إلكتروني كامل مع خصم 30% على أول 3 أشهر.", cta_btn: "اطلب ديمو الآن ←",
+                copyright: "© 2026 Ordexa Platform – جميع الحقوق محفوظة. تصميم وتطوير المهندس ربيع الباز."
             },
             en: {
-                nav_home: "Home", nav_services: "Services", nav_pricing: "Pricing", nav_work: "Portfolio", nav_templates: "Templates", nav_contact: "Contact", nav_cta: "Free Demo",
+                nav_home: "Home", nav_services: "Services", nav_pricing: "Pricing", nav_work: "Portfolio", nav_templates: "Templates", nav_contact: "Contact", nav_cta: "Get Free Demo",
                 hero_title: "Integrated Digital Solutions: Digital Menu, E‑stores & Business Websites",
-                hero_sub: "We build strong digital identity: professional business websites, digital menus for restaurants & cafes, e-commerce stores, and integrated ordering systems. All with expert design by Eng. Rabie Elbaz.",
+                hero_sub: "We build a strong digital identity: professional business websites, digital menus for restaurants & cafes, e-commerce stores, and integrated ordering systems. All services with expert design by Eng. Rabie Elbaz.",
                 hero_btn_start: "Start 5-Day Free Trial", hero_btn_contact: "Talk to Expert",
-                stat_businesses: "Projects", stat_orders: "Orders", stat_trial: "Free Trial", stat_discount: "30% off 3 months",
-                services_title: "Our Integrated Digital Solutions", services_desc: "All designs by Eng. Rabie Elbaz.",
-                serv1: "Business Websites", serv1_desc: "Strong digital identity.",
-                serv2: "QR Digital Menu for Restaurants", serv2_desc: "Scan & order instantly.",
-                serv3: "E‑commerce Stores", serv3_desc: "Full shopping system + payment gateways.",
-                serv4: "Instant WhatsApp & Telegram Orders", serv4_desc: "Full details sent directly.",
-                pricing_title: "Plans in EGP", pricing_sub: "5-day free trial + 30% off first 3 months",
-                plan_monthly: "Monthly", plan_monthly_desc: "Complete digital menu, support, updates.",
-                plan_quarter: "First 3 Months", plan_quarter_desc: "Save 449 EGP, all features included.",
-                plan_custom: "Custom Pro", plan_custom_desc: "Full branding, multi-channel, dashboard.",
-                btn_start: "Start 5-Day Trial", btn_offer: "Get Discount", btn_custom: "Contact Sales",
-                work_title: "Our Portfolio – Live Projects", work_sub: "Innovative solutions for the Egyptian market.",
-                templates_title: "Ready-to-Use Professional Templates", templates_sub: "Premium templates for e‑commerce or education platforms.",
-                dev_desc: "Expert programmer & web developer – all systems built with highest quality standards. 7+ years experience in restaurant digital solutions, e‑commerce, and recruitment platforms.",
-                why_title: "Why Ordexa by Eng. Rabie Elbaz?",
-                cta_title: "Start Your 5-Day Free Trial Today", cta_sub: "Get a professional website or digital menu + 30% off first 3 months.", cta_btn: "Request Demo →"
+                stat_businesses: "Businesses", stat_orders: "Orders Processed", stat_trial: "Free Trial", stat_discount: "First 3 Months Discount",
+                services_title: "Our Integrated Digital Solutions", services_desc: "All designs and development by Eng. Rabie Elbaz – Expert programmer & web developer.",
+                serv1: "Professional Business Websites", serv1_desc: "Strong digital identity reflecting your brand.",
+                serv2: "QR Digital Menu for Restaurants & Cafes", serv2_desc: "Digital food menu accessible by simple scan.",
+                serv3: "Integrated E‑commerce Stores", serv3_desc: "Complete shopping system with payment gateways.",
+                serv4: "Instant WhatsApp & Telegram Orders", serv4_desc: "Full order details sent directly to your account.",
+                pricing_title: "Plans for Every Business – Prices in EGP", pricing_sub: "5-day free trial + 30% off first 3 monthly subscriptions",
+                offer_badge1: "🔥 Special Offer", plan_monthly: "Monthly Subscription", old_price_monthly: "Regular price 699 EGP", free_trial_text: "⭐ First 5 days completely free", plan_monthly_desc: "Complete digital menu, tech support, unlimited updates.",
+                offer_badge2: "🎁 30% off for 3 months", plan_quarter: "First 3 months subscription", old_price_quarter: "Regular payment 1497 EGP", plan_quarter_desc: "Save 449 EGP when subscribing for the first 3 months, includes all features.",
+                plan_custom: "Custom Professional Package", custom_price: "Contact Us", plan_custom_desc: "Complete branding, multi-channel integration, advanced dashboard.",
+                btn_start: "Start 5-Day Trial", btn_offer: "Get Discount Now", btn_custom: "Request Quote",
+                work_title: "Our Portfolio – Live Project Examples", work_sub: "We provide innovative digital solutions tailored to the Egyptian market.",
+                work1_title: "Digital Menu for Buffalo Bono Restaurant – Direct ordering for restaurants & cafes", work1_desc: "Integrated digital menu system allowing customers to browse and order dishes with one click, sending orders directly to the restaurant via WhatsApp and Telegram.", work1_link: "🍕 Try the restaurant menu →",
+                work2_title: "Landing Page – Integrated shopping cart with WhatsApp", work2_desc: "Professional product landing page. Customer selects quantity and order details are sent directly to the seller via WhatsApp.", work2_link: "📱 Try the product page →",
+                work3_title: "Integrated Recruitment System – Talabat Careers platform", work3_desc: "Full recruitment platform allowing applicants to send their data and documents directly to management with dynamic pricing tables and instant acceptance conditions.", work3_link: "📄 Try the recruitment system →",
+                templates_title: "Ready-to-Use Templates", templates_sub: "Premium templates for your e‑commerce store or educational platform. Use immediately and start your business today.",
+                template_badge1: "E‑commerce Store", template1_title: "Ordexa-Commerce – Complete fashion e‑commerce store", template1_desc: "Professional fashion store template supporting product display, ratings, shopping cart, and special offers. Fully responsive design.", template1_link: "🛒 Preview the store →",
+                template_badge2: "Educational Platform", template2_title: "Ordexa-Edu-Platform – Complete online courses platform", template2_desc: "Full educational platform with Visa/Mastercard payment integration, accurate statistics, and categorized course display.", template2_link: "📚 Preview the platform →",
+                dev_title: "Eng. <span>Rabie Elbaz</span>", dev_desc: "Expert programmer & web developer – all designs and systems here are hand-coded with the highest global quality standards. Over 7 years of experience in digital restaurant solutions, e‑commerce stores, and recruitment systems.",
+                why_title: "Why choose Ordexa Platform with Eng. Rabie Elbaz?",
+                why1: "Instant Execution", why1_desc: "Within 24 hours of receiving your data.",
+                why2: "Professional Design", why2_desc: "Modern & persuasive user interfaces.",
+                why3: "Continuous Support", why3_desc: "Free updates & modifications for the first 3 months.",
+                cta_title: "Don't wait – start your 5-day free trial", cta_sub: "Get a professional website or complete digital menu with 30% off your first 3 months.", cta_btn: "Request Demo Now →",
+                copyright: "© 2026 Ordexa Platform – All rights reserved. Designed & developed by Eng. Rabie Elbaz."
             }
         };
         let currentLang = 'ar';
         function updateLanguage(lang) {
             document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.dataset.i18n;
-                if (translations[lang]?.[key]) el.innerText = translations[lang][key];
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = translations[lang][key];
+                    } else if (key === 'dev_title') {
+                        // special handling for inner HTML with span
+                        el.innerHTML = translations[lang][key];
+                    } else {
+                        el.innerText = translations[lang][key];
+                    }
+                }
             });
             if (lang === 'en') {
                 document.body.classList.add('en');
@@ -736,7 +768,8 @@
             currentLang = lang;
         }
         document.getElementById('langToggleHeader').addEventListener('click', () => {
-            updateLanguage(currentLang === 'ar' ? 'en' : 'ar');
+            const newLang = currentLang === 'ar' ? 'en' : 'ar';
+            updateLanguage(newLang);
         });
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
