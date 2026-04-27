@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Ordexa منصة | منيو إلكتروني ذكي للمطاعم والكافيهات - المهندس ربيع الباز</title>
-    <meta name="description" content="حوّل مطعمك إلى نظام رقمي ذكي - طلبات مباشرة عبر واتساب، تليجرام، والبريد الإلكتروني. تصميم المهندس ربيع الباز. تجربة مجانية لمدة 5 أيام، وخصم 30% على أول 3 أشهر.">
-    <meta property="og:title" content="Ordexa منصة | منيو إلكتروني احترافي">
-    <meta property="og:description" content="منيو إلكتروني ذكي لمطعمك وكافيهك بالجنيه المصري - تصميم المهندس ربيع الباز">
+    <title>Ordexa منصة | منيو إلكتروني ذكي - تيمبلتات جاهزة - المهندس ربيع الباز</title>
+    <meta name="description" content="حوّل مطعمك إلى نظام رقمي ذكي - طلبات مباشرة عبر واتساب، تليجرام، والبريد الإلكتروني. تيمبلتات جاهزة لمتجرك الإلكتروني ومنصتك التعليمية.">
+    <meta property="og:title" content="Ordexa منصة | منيو إلكتروني احترافي وتيمبلتات جاهزة">
+    <meta property="og:description" content="منيو إلكتروني ذكي لمطعمك وكافيهك بالجنيه المصري - تيمبلتات متجر إلكتروني ومنصة تعليمية جاهزة للاستخدام.">
     <meta property="og:image" content="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg">
     <style>
         * {
@@ -252,13 +252,13 @@
             color: transparent;
         }
 
-        .services-grid, .work-grid {
+        .services-grid, .work-grid, .templates-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin: 2rem 0;
         }
-        .service-card, .work-card {
+        .service-card, .work-card, .template-card {
             background: white;
             border-radius: 24px;
             padding: 1.5rem;
@@ -266,7 +266,7 @@
             transition: var(--transition-smooth);
             border: 1px solid var(--cool-gray);
         }
-        .service-card:hover, .work-card:hover {
+        .service-card:hover, .work-card:hover, .template-card:hover {
             transform: translateY(-6px);
             box-shadow: var(--shadow-md);
             border-color: var(--neon-blue);
@@ -275,9 +275,19 @@
             font-size: 2.4rem;
             margin-bottom: 0.8rem;
         }
-        .service-card h3, .work-card h3 {
+        .service-card h3, .work-card h3, .template-card h3 {
             font-size: 1.25rem;
             margin-bottom: 0.5rem;
+        }
+        .template-badge {
+            background: var(--gradient-gold);
+            color: white;
+            padding: 0.25rem 0.8rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
         }
         .work-img-placeholder {
             background: linear-gradient(145deg, #1a2a3a, #0f1922);
@@ -289,7 +299,7 @@
             margin-bottom: 1rem;
             font-size: 2rem;
         }
-        .work-link {
+        .work-link, .template-link {
             display: inline-block;
             margin-top: 1rem;
             background: var(--gradient-gold);
@@ -300,7 +310,7 @@
             font-weight: 600;
             transition: 0.2s;
         }
-        .work-link:hover {
+        .work-link:hover, .template-link:hover {
             opacity: 0.9;
             transform: scale(1.02);
         }
@@ -436,6 +446,7 @@
                 <a href="#services" data-i18n="nav_services">خدماتنا</a>
                 <a href="#pricing" data-i18n="nav_pricing">الباقات والأسعار</a>
                 <a href="#our-work" data-i18n="nav_work">أعمالنا</a>
+                <a href="#templates" data-i18n="nav_templates">تيمبلتات جاهزة</a>
                 <a href="#contact" data-i18n="nav_contact">اتصل بنا</a>
                 <a href="#demo" class="btn btn-primary" data-i18n="nav_cta">اطلب ديمو مجاني</a>
             </div>
@@ -511,7 +522,7 @@
             </div>
         </section>
 
-        <!-- أعمالنا المنفذة - نماذج حقيقية لمشاريع سابقة مع إضافة ordertest -->
+        <!-- أعمالنا المنفذة - نماذج حقيقية لمشاريع سابقة -->
         <section class="container" id="our-work">
             <div class="section-title">
                 <h2 data-i18n="work_title">أعمالنا المنفذة – نماذج حية لمشاريع سابقة</h2>
@@ -521,28 +532,53 @@
                 <div class="work-card">
                     <div class="work-img-placeholder">🍽️</div>
                     <h3>منيو إلكتروني لمطعم Buffalo Bono – طلب مباشر للمطاعم والكافيهات</h3>
-                    <p>نظام منيو رقمي متكامل لمطعم Buff Bono يقدم لحوم مشوية على اللهب، دجاج مقرمش وصوصات بافلو. يتيح للزبائن تصفح القائمة وطلب الأطباق المفضلة بنقرة زر، مع إرسال الطلبات مباشرة للمطعم عبر واتساب وتليجرام.</p>
+                    <p>نظام منيو رقمي متكامل لمطعم Buff Bono يتيح للزبائن تصفح القائمة وطلب الأطباق المفضلة بنقرة زر، مع إرسال الطلبات مباشرة للمطعم عبر واتساب وتليجرام.</p>
                     <a href="https://rabeeamohamedmohamed-ops.github.io/ordertest/" target="_blank" class="work-link">🍕 جرب منيو المطعم →</a>
                 </div>
                 <div class="work-card">
                     <div class="work-img-placeholder">🎧</div>
                     <h3>لاندينج بيج – سلة مشتريات متكاملة مع واتساب</h3>
-                    <p>صفحة هبوط احترافية لمنتج إلكتروني. يقوم العميل باختيار الكمية ويتم إرسال الطلب بالتفاصيل الكاملة إلى صاحب المنتج عبر واتساب. تتضمن نظام مؤقت تنازلي وآراء العملاء وحساب الشحن.</p>
+                    <p>صفحة هبوط احترافية لمنتج إلكتروني. يقوم العميل باختيار الكمية ويتم إرسال الطلب بالتفاصيل الكاملة إلى صاحب المنتج عبر واتساب.</p>
                     <a href="https://rabeeamohamedmohamed-ops.github.io/Landing-page-test/" target="_blank" class="work-link">📱 تجربة صفحة المنتج →</a>
                 </div>
                 <div class="work-card">
                     <div class="work-img-placeholder">📦</div>
                     <h3>نظام توظيف متكامل – منصة توظيف إلكترونية لشركة طلبات (Talabat Careers)</h3>
-                    <p>منصة توظيف متكاملة تسمح للمتقدمين بإرسال بياناتهم ومستنداتهم مباشرة للإدارة مع جداول تسعير ديناميكية، وشروط قبول فورية، ونظام قبول سريع. مثالية لشركات التوصيل الكبرى.</p>
+                    <p>منصة توظيف متكاملة تسمح للمتقدمين بإرسال بياناتهم ومستنداتهم مباشرة للإدارة مع جداول تسعير ديناميكية وشروط قبول فورية.</p>
                     <a href="https://rabeeamohamedmohamed-ops.github.io/talabat-form/" target="_blank" class="work-link">📄 تجربة نظام التوظيف →</a>
                 </div>
             </div>
-            <div class="developer-card" style="margin-top: 0;">
-                <h3>المهندس <span>ربيع الباز</span></h3>
-                <p data-i18n="dev_desc">خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة في تطوير حلول المطاعم الرقمية وأنظمة التوظيف وصفحات المبيعات الإلكترونية.</p>
-                <p style="margin-top: 0.8rem;">📞 01120687989  |  🌐 Ordexa Platform</p>
+        </section>
+
+        <!-- تيمبلتات جاهزة - قوالب احترافية جديدة -->
+        <section class="container" id="templates">
+            <div class="section-title">
+                <h2 data-i18n="templates_title">تيمبلتات جاهزة للاستخدام الفوري</h2>
+                <p data-i18n="templates_sub">قوالب احترافية جاهزة لمتجرك الإلكتروني أو منصتك التعليمية. استخدمها فوراً وابدأ نشاطك التجاري اليوم.</p>
+            </div>
+            <div class="templates-grid">
+                <div class="template-card">
+                    <div class="template-badge">متجر إلكتروني</div>
+                    <div class="work-img-placeholder">🛍️ DOLA STORE</div>
+                    <h3>Ordexa-Commerce – متجر أزياء إلكتروني متكامل</h3>
+                    <p>تيمبلت متجر أزياء احترافي يدعم عرض المنتجات، نظام تقييمات، سلة مشتريات، وعروض خاصة. يتضمن خصومات ديناميكية وتصميم متجاوب بالكامل مع الهواتف.</p>
+                    <a href="https://ordexaplatform.github.io/Ordexa-Commerce/" target="_blank" class="template-link">🛒 معاينة المتجر →</a>
+                </div>
+                <div class="template-card">
+                    <div class="template-badge">منصة تعليمية</div>
+                    <div class="work-img-placeholder">🎓 Ordexa Edu</div>
+                    <h3>Ordexa-Edu-Platform – منصة كورسات أونلاين متكاملة</h3>
+                    <p>تيمبلت منصة تعليمية متكاملة مع نظام دفع إلكتروني عبر Visa/Mastercard، إحصائيات دقيقة، وعرض الكورسات بتصنيفاتها. توفر تجربة تعلم فائقة الجودة.</p>
+                    <a href="https://ordexaplatform.github.io/Ordexa-Edu-Platform/" target="_blank" class="template-link">📚 معاينة المنصة →</a>
+                </div>
             </div>
         </section>
+
+        <div class="developer-card" style="margin: 2rem 1.5rem;">
+            <h3>المهندس <span>ربيع الباز</span></h3>
+            <p data-i18n="dev_desc">خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة في تطوير حلول المطاعم الرقمية وأنظمة التوظيف وصفحات المبيعات الإلكترونية.</p>
+            <p style="margin-top: 0.8rem;">📞 01120687989  |  🌐 Ordexa Platform</p>
+        </div>
 
         <section class="container" id="why">
             <div class="section-title">
@@ -574,6 +610,7 @@
                 <a href="#services">خدماتنا</a>
                 <a href="#pricing">الباقات</a>
                 <a href="#our-work">أعمالنا</a>
+                <a href="#templates">تيمبلتات</a>
             </div>
             <div class="social-icons">
                 <a href="https://www.facebook.com/ordexaplatform" target="_blank">
@@ -590,7 +627,7 @@
     <script>
         const translations = {
             ar: {
-                nav_home: "الرئيسية", nav_services: "خدماتنا", nav_pricing: "الباقات", nav_work: "أعمالنا", nav_contact: "اتصل بنا", nav_cta: "اطلب ديمو مجاني",
+                nav_home: "الرئيسية", nav_services: "خدماتنا", nav_pricing: "الباقات", nav_work: "أعمالنا", nav_templates: "تيمبلتات", nav_contact: "اتصل بنا", nav_cta: "اطلب ديمو مجاني",
                 hero_title: "منيو إلكتروني ذكي لمطعمك وكافيهك بالجنيه المصري",
                 hero_sub: "حوّل قائمة طعامك إلى نظام طلب رقمي متكامل. اطلب بضغطة زر، واستقبل الطلبات مفصلة عبر واتساب، تليجرام، أو البريد الإلكتروني. تصميمات حصرية على يد المهندس ربيع الباز.",
                 hero_btn_start: "ابدأ تجربة مجانية 5 أيام", hero_btn_contact: "تحدث مع خبير",
@@ -606,12 +643,13 @@
                 plan_custom: "باقة احترافية مخصصة", plan_custom_desc: "تصميم كامل الهوية، ربط متعدد القنوات، لوحة تحكم متقدمة.",
                 btn_start: "ابدأ تجربة 5 أيام", btn_offer: "احصل على الخصم الآن", btn_custom: "طلب عرض سعر",
                 work_title: "أعمالنا المنفذة – نماذج حية لمشاريع سابقة", work_sub: "نقدم لعملائنا حلولاً رقمية مبتكرة تخدم احتياجات السوق المصري.",
+                templates_title: "تيمبلتات جاهزة للاستخدام الفوري", templates_sub: "قوالب احترافية جاهزة لمتجرك الإلكتروني أو منصتك التعليمية. استخدمها فوراً وابدأ نشاطك التجاري اليوم.",
                 dev_desc: "خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة في تطوير حلول المطاعم الرقمية وأنظمة التوظيف وصفحات المبيعات الإلكترونية.",
                 why_title: "لماذا تختار منصة Ordexa مع المهندس ربيع الباز؟",
                 cta_title: "لا تنتظر – ابدأ تجربتك المجانية لمدة 5 أيام", cta_sub: "احصل على منيو إلكتروني كامل مع خصم 30% على أول 3 أشهر. التزام مجاني، بدون عقوبات.", cta_btn: "اطلب ديمو الآن ←"
             },
             en: {
-                nav_home: "Home", nav_services: "Services", nav_pricing: "Pricing", nav_work: "Our Work", nav_contact: "Contact", nav_cta: "Free Demo",
+                nav_home: "Home", nav_services: "Services", nav_pricing: "Pricing", nav_work: "Portfolio", nav_templates: "Templates", nav_contact: "Contact", nav_cta: "Free Demo",
                 hero_title: "Smart Digital Menu for Restaurants & Cafes in EGP",
                 hero_sub: "Turn your menu into a digital ordering system. One-click orders via WhatsApp, Telegram, Email. Designed by Eng. Rabie Elbaz.",
                 hero_btn_start: "Start 5-Day Free Trial", hero_btn_contact: "Talk to Expert",
@@ -624,6 +662,7 @@
                 plan_custom: "Custom Pro", plan_custom_desc: "Full branding, multi-channel, dashboard.",
                 btn_start: "Start 5-Day Trial", btn_offer: "Get Discount", btn_custom: "Contact Sales",
                 work_title: "Our Portfolio – Live Digital Projects", work_sub: "Innovative solutions tailored for the Egyptian market.",
+                templates_title: "Ready-to-Use Professional Templates", templates_sub: "Premium templates for your e-commerce store or educational platform. Launch your business today.",
                 dev_desc: "Expert programmer & web developer – all systems built with high quality standards. 7+ years experience in restaurant digital solutions, recruitment platforms, and e-commerce landing pages.",
                 why_title: "Why Ordexa by Eng. Rabie Elbaz?",
                 cta_title: "Start Your 5-Day Free Trial Today", cta_sub: "Get full digital menu + 30% off first 3 months.", cta_btn: "Request Demo →"
@@ -652,7 +691,7 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
         }, { threshold: 0.1 });
-        document.querySelectorAll('.service-card, .pricing-card, .work-card, .stat-item, .cta, .developer-card').forEach(el => {
+        document.querySelectorAll('.service-card, .pricing-card, .work-card, .template-card, .stat-item, .cta, .developer-card').forEach(el => {
             el.classList.add('fade-up');
             observer.observe(el);
         });
@@ -663,4 +702,4 @@
         updateLanguage('ar');
     </script>
 </body>
-    </html>
+</html>
