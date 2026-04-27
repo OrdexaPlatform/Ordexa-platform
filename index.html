@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Ordexa منصة | منيو إلكتروني ذكي للمطاعم والكافيهات - المهندس ربيع الباز</title>
-    <!-- Open Graph Meta Tags -->
+    <meta name="description" content="حوّل مطعمك إلى نظام رقمي ذكي - طلبات مباشرة عبر واتساب، تليجرام، والبريد الإلكتروني. تصميم المهندس ربيع الباز. تجربة مجانية لمدة 5 أيام، وخصم 30% على أول 3 أشهر.">
     <meta property="og:title" content="Ordexa منصة | منيو إلكتروني احترافي">
-    <meta property="og:description" content="حوّل مطعمك إلى نظام رقمي ذكي - طلبات مباشرة عبر واتساب، تليجرام، والبريد الإلكتروني. تصميم المهندس ربيع الباز.">
+    <meta property="og:description" content="منيو إلكتروني ذكي لمطعمك وكافيهك بالجنيه المصري - تصميم المهندس ربيع الباز">
     <meta property="og:image" content="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg">
     <style>
         * {
@@ -231,7 +231,80 @@
             100% { transform: translateY(30px);}
         }
 
-        /* pricing cards */
+        .stats-section {
+            background: var(--off-white);
+            padding: 2.5rem 0;
+            border-radius: 40px;
+            margin: 1.5rem 0;
+        }
+        .stats-grid {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            text-align: center;
+        }
+        .stat-item h3 {
+            font-size: 2rem;
+            background: var(--gradient-primary);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .services-grid, .work-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .service-card, .work-card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-smooth);
+            border: 1px solid var(--cool-gray);
+        }
+        .service-card:hover, .work-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--neon-blue);
+        }
+        .service-icon {
+            font-size: 2.4rem;
+            margin-bottom: 0.8rem;
+        }
+        .service-card h3, .work-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .work-img-placeholder {
+            background: linear-gradient(145deg, #1a2a3a, #0f1922);
+            height: 160px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        .work-link {
+            display: inline-block;
+            margin-top: 1rem;
+            background: var(--gradient-gold);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .work-link:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
         .pricing-grid {
             display: flex;
             flex-wrap: wrap;
@@ -253,19 +326,11 @@
         .pricing-card:hover {
             transform: translateY(-8px);
         }
-        .pricing-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
         .price {
             font-size: 2.5rem;
             font-weight: 800;
             color: var(--neon-blue);
             margin: 1rem 0;
-        }
-        .price small {
-            font-size: 1rem;
-            font-weight: normal;
         }
         .old-price {
             text-decoration: line-through;
@@ -290,58 +355,6 @@
             font-weight: 600;
         }
 
-        .services-grid, .showcase-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-        .service-card, .menu-card {
-            background: white;
-            border-radius: 24px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition-smooth);
-            border: 1px solid var(--cool-gray);
-        }
-        .service-card:hover, .menu-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-md);
-        }
-        .service-icon {
-            font-size: 2.4rem;
-            margin-bottom: 0.8rem;
-        }
-        .menu-preview {
-            background: linear-gradient(145deg, #1e2a3a, #0f1722);
-            padding: 1.2rem;
-            border-radius: 20px;
-            margin-bottom: 1rem;
-        }
-        .mock-menu {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(4px);
-            border-radius: 20px;
-            padding: 0.8rem;
-        }
-        .mock-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.4rem 0;
-            border-bottom: 1px dashed rgba(255,255,255,0.2);
-            color: white;
-        }
-        .demo-link {
-            display: inline-block;
-            margin-top: 1rem;
-            background: var(--gradient-gold);
-            color: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
         .developer-card {
             background: linear-gradient(135deg, #0A1128, #1a2a4f);
             color: white;
@@ -356,27 +369,6 @@
         }
         .developer-card span {
             color: #FFD966;
-        }
-
-        .stats-section {
-            background: var(--off-white);
-            padding: 2.5rem 0;
-            border-radius: 40px;
-            margin: 1.5rem 0;
-        }
-        .stats-grid {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            text-align: center;
-        }
-        .stat-item h3 {
-            font-size: 2rem;
-            background: var(--gradient-primary);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
         }
 
         .cta {
@@ -434,7 +426,7 @@
         <div class="container navbar">
             <div class="logo-area">
                 <div class="logo">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg" alt="Ordexa">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg" alt="Ordexa Platform">
                 </div>
                 <button class="lang-header-btn" id="langToggleHeader">English</button>
             </div>
@@ -443,7 +435,7 @@
                 <a href="#home" data-i18n="nav_home">الرئيسية</a>
                 <a href="#services" data-i18n="nav_services">خدماتنا</a>
                 <a href="#pricing" data-i18n="nav_pricing">الباقات والأسعار</a>
-                <a href="#work" data-i18n="nav_work">أعمالنا</a>
+                <a href="#our-work" data-i18n="nav_work">أعمالنا</a>
                 <a href="#contact" data-i18n="nav_contact">اتصل بنا</a>
                 <a href="#demo" class="btn btn-primary" data-i18n="nav_cta">اطلب ديمو مجاني</a>
             </div>
@@ -480,14 +472,13 @@
                 <p data-i18n="services_desc">جميع التصميمات والتطوير بواسطة المهندس ربيع الباز – خبير برمجة وتطوير مواقع احترافية.</p>
             </div>
             <div class="services-grid">
-                <div class="service-card"><div class="service-icon">📱</div><h3 data-i18n="serv1">منيو إلكتروني QR</h3><p data-i18n="serv1_desc">مسح ضوئي للوصول الفوري.</p></div>
-                <div class="service-card"><div class="service-icon">💬</div><h3 data-i18n="serv2">طلبات واتساب وتليجرام</h3><p data-i18n="serv2_desc">تفاصيل كاملة تصل لحسابك.</p></div>
+                <div class="service-card"><div class="service-icon">📱</div><h3 data-i18n="serv1">منيو إلكتروني QR</h3><p data-i18n="serv1_desc">مسح ضوئي للوصول الفوري لقائمة طعام رقمية.</p></div>
+                <div class="service-card"><div class="service-icon">💬</div><h3 data-i18n="serv2">طلبات واتساب وتليجرام</h3><p data-i18n="serv2_desc">تفاصيل كاملة تصل لحسابك مباشرة.</p></div>
                 <div class="service-card"><div class="service-icon">📧</div><h3 data-i18n="serv3">إشعارات إيميل</h3><p data-i18n="serv3_desc">نسخة احتياطية لكل طلب.</p></div>
-                <div class="service-card"><div class="service-icon">🌐</div><h3 data-i18n="serv4">موقع ويب لمطعمك</h3><p data-i18n="serv4_desc">هوية رقمية متكاملة.</p></div>
+                <div class="service-card"><div class="service-icon">🌐</div><h3 data-i18n="serv4">موقع ويب لمطعمك</h3><p data-i18n="serv4_desc">هوية رقمية متكاملة تعكس علامتك التجارية.</p></div>
             </div>
         </section>
 
-        <!-- Pricing Section with Egyptian Pounds + Offers -->
         <section class="container" id="pricing">
             <div class="section-title">
                 <h2 data-i18n="pricing_title">باقات تناسب كل الأعمال – أسعار بالجنيه المصري</h2>
@@ -520,48 +511,38 @@
             </div>
         </section>
 
-        <!-- Showcase with real demo link -->
-        <section class="container" id="work">
+        <!-- أعمالنا المنفذة - نماذج حقيقية لمشاريع سابقة مع إضافة ordertest -->
+        <section class="container" id="our-work">
             <div class="section-title">
-                <h2 data-i18n="showcase_title">تصاميم منيو إلكتروني احترافية – تنفيذ المهندس ربيع الباز</h2>
-                <p data-i18n="showcase_sub">جرب بنفسك تجربة الطلب السلسة (مطعم تجريبي)</p>
+                <h2 data-i18n="work_title">أعمالنا المنفذة – نماذج حية لمشاريع سابقة</h2>
+                <p data-i18n="work_sub">نقدم لعملائنا حلولاً رقمية مبتكرة تخدم احتياجات السوق المصري.</p>
             </div>
-            <div class="showcase-grid">
-                <div class="menu-card">
-                    <div class="menu-preview">
-                        <div class="mock-menu">
-                            <div class="mock-item"><span>🍕 بيتزا مارغريتا</span><span>120 ج.م</span></div>
-                            <div class="mock-item"><span>🍔 برجر دجاج</span><span>95 ج.م</span></div>
-                            <div class="mock-item"><span>🥗 سلطة سيزر</span><span>75 ج.م</span></div>
-                        </div>
-                    </div>
-                    <h3>منيو عصري لمطعم</h3>
-                    <p>طلب مباشر، واتساب، تليجرام – تجربة حقيقية.</p>
-                    <a href="https://rabeeamohamedmohamed-ops.github.io/ordertest/" target="_blank" class="demo-link">📱 جرب العرض التفاعلي →</a>
+            <div class="work-grid">
+                <div class="work-card">
+                    <div class="work-img-placeholder">🍽️</div>
+                    <h3>منيو إلكتروني لمطعم Buffalo Bono – طلب مباشر للمطاعم والكافيهات</h3>
+                    <p>نظام منيو رقمي متكامل لمطعم Buff Bono يقدم لحوم مشوية على اللهب، دجاج مقرمش وصوصات بافلو. يتيح للزبائن تصفح القائمة وطلب الأطباق المفضلة بنقرة زر، مع إرسال الطلبات مباشرة للمطعم عبر واتساب وتليجرام.</p>
+                    <a href="https://rabeeamohamedmohamed-ops.github.io/ordertest/" target="_blank" class="work-link">🍕 جرب منيو المطعم →</a>
                 </div>
-                <div class="menu-card">
-                    <div class="menu-preview" style="background: linear-gradient(145deg, #2A1B3D, #0F0C1F);">
-                        <div class="mock-menu">
-                            <div class="mock-item"><span>☕ قهوة تركية</span><span>45 ج.م</span></div>
-                            <div class="mock-item"><span>🍰 تشيز كيك</span><span>85 ج.م</span></div>
-                            <div class="mock-item"><span>🧋 لاتيه موكا</span><span>70 ج.م</span></div>
-                        </div>
-                    </div>
-                    <h3>منيو كافيه راقي</h3>
-                    <p>تصميم خاص يجذب العملاء ويزيد الطلبات.</p>
-                    <a href="https://rabeeamohamedmohamed-ops.github.io/ordertest/" target="_blank" class="demo-link">✨ تجربة حية →</a>
+                <div class="work-card">
+                    <div class="work-img-placeholder">🎧</div>
+                    <h3>لاندينج بيج – سلة مشتريات متكاملة مع واتساب</h3>
+                    <p>صفحة هبوط احترافية لمنتج إلكتروني. يقوم العميل باختيار الكمية ويتم إرسال الطلب بالتفاصيل الكاملة إلى صاحب المنتج عبر واتساب. تتضمن نظام مؤقت تنازلي وآراء العملاء وحساب الشحن.</p>
+                    <a href="https://rabeeamohamedmohamed-ops.github.io/Landing-page-test/" target="_blank" class="work-link">📱 تجربة صفحة المنتج →</a>
+                </div>
+                <div class="work-card">
+                    <div class="work-img-placeholder">📦</div>
+                    <h3>نظام توظيف متكامل – منصة توظيف إلكترونية لشركة طلبات (Talabat Careers)</h3>
+                    <p>منصة توظيف متكاملة تسمح للمتقدمين بإرسال بياناتهم ومستنداتهم مباشرة للإدارة مع جداول تسعير ديناميكية، وشروط قبول فورية، ونظام قبول سريع. مثالية لشركات التوصيل الكبرى.</p>
+                    <a href="https://rabeeamohamedmohamed-ops.github.io/talabat-form/" target="_blank" class="work-link">📄 تجربة نظام التوظيف →</a>
                 </div>
             </div>
-        </section>
-
-        <!-- Developer credit -->
-        <div class="container">
-            <div class="developer-card">
+            <div class="developer-card" style="margin-top: 0;">
                 <h3>المهندس <span>ربيع الباز</span></h3>
-                <p data-i18n="dev_desc">خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة في تطوير حلول المطاعم الرقمية.</p>
+                <p data-i18n="dev_desc">خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة في تطوير حلول المطاعم الرقمية وأنظمة التوظيف وصفحات المبيعات الإلكترونية.</p>
                 <p style="margin-top: 0.8rem;">📞 01120687989  |  🌐 Ordexa Platform</p>
             </div>
-        </div>
+        </section>
 
         <section class="container" id="why">
             <div class="section-title">
@@ -586,13 +567,13 @@
     <footer id="contact">
         <div class="container footer-content">
             <div class="footer-logo">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg" alt="Ordexa">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg" alt="Ordexa Platform">
             </div>
             <div class="footer-links">
                 <a href="#home">الرئيسية</a>
+                <a href="#services">خدماتنا</a>
                 <a href="#pricing">الباقات</a>
-                <a href="#work">أعمالنا</a>
-                <a href="#contact">اتصل بنا</a>
+                <a href="#our-work">أعمالنا</a>
             </div>
             <div class="social-icons">
                 <a href="https://www.facebook.com/ordexaplatform" target="_blank">
@@ -615,17 +596,17 @@
                 hero_btn_start: "ابدأ تجربة مجانية 5 أيام", hero_btn_contact: "تحدث مع خبير",
                 stat_businesses: "مطعم ومنشأة", stat_orders: "طلب عبر المنصة", stat_trial: "تجربة مجانية", stat_discount: "خصم أول 3 شهور",
                 services_title: "حلولنا الرقمية للأسواق المصرية", services_desc: "جميع التصاميم والتطوير بواسطة المهندس ربيع الباز – خبير برمجة وتطوير مواقع احترافية.",
-                serv1: "منيو إلكتروني QR", serv1_desc: "مسح ضوئي للوصول الفوري.",
-                serv2: "طلبات واتساب وتليجرام", serv2_desc: "تفاصيل كاملة تصل لحسابك.",
+                serv1: "منيو إلكتروني QR", serv1_desc: "مسح ضوئي للوصول الفوري لقائمة طعام رقمية.",
+                serv2: "طلبات واتساب وتليجرام", serv2_desc: "تفاصيل كاملة تصل لحسابك مباشرة.",
                 serv3: "إشعارات إيميل", serv3_desc: "نسخة احتياطية لكل طلب.",
-                serv4: "موقع ويب لمطعمك", serv4_desc: "هوية رقمية متكاملة.",
+                serv4: "موقع ويب لمطعمك", serv4_desc: "هوية رقمية متكاملة تعكس علامتك التجارية.",
                 pricing_title: "باقات تناسب كل الأعمال – أسعار بالجنيه المصري", pricing_sub: "تجربة مجانية 5 أيام، وخصم 30% على أول 3 اشتراكات شهرية",
                 plan_monthly: "اشتراك شهري", plan_monthly_desc: "منيو رقمي كامل، دعم فني، تحديثات غير محدودة.",
                 plan_quarter: "الاشتراك الأول (3 شهور)", plan_quarter_desc: "وفر 449 ج.م عند الاشتراك لأول 3 أشهر، شامل كل المميزات.",
                 plan_custom: "باقة احترافية مخصصة", plan_custom_desc: "تصميم كامل الهوية، ربط متعدد القنوات، لوحة تحكم متقدمة.",
                 btn_start: "ابدأ تجربة 5 أيام", btn_offer: "احصل على الخصم الآن", btn_custom: "طلب عرض سعر",
-                showcase_title: "تصاميم منيو إلكتروني احترافية – تنفيذ المهندس ربيع الباز", showcase_sub: "جرب بنفسك تجربة الطلب السلسة (مطعم تجريبي)",
-                dev_desc: "خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة.",
+                work_title: "أعمالنا المنفذة – نماذج حية لمشاريع سابقة", work_sub: "نقدم لعملائنا حلولاً رقمية مبتكرة تخدم احتياجات السوق المصري.",
+                dev_desc: "خبير برمجة وتطوير مواقع احترافية – جميع التصميمات والأنظمة المقدمة هنا تم تطويرها يدويًا بأعلى معايير الجودة العالمية. أكثر من 7 سنوات خبرة في تطوير حلول المطاعم الرقمية وأنظمة التوظيف وصفحات المبيعات الإلكترونية.",
                 why_title: "لماذا تختار منصة Ordexa مع المهندس ربيع الباز؟",
                 cta_title: "لا تنتظر – ابدأ تجربتك المجانية لمدة 5 أيام", cta_sub: "احصل على منيو إلكتروني كامل مع خصم 30% على أول 3 أشهر. التزام مجاني، بدون عقوبات.", cta_btn: "اطلب ديمو الآن ←"
             },
@@ -642,8 +623,8 @@
                 plan_quarter: "First 3 Months", plan_quarter_desc: "Save 449 EGP, includes all features.",
                 plan_custom: "Custom Pro", plan_custom_desc: "Full branding, multi-channel, dashboard.",
                 btn_start: "Start 5-Day Trial", btn_offer: "Get Discount", btn_custom: "Contact Sales",
-                showcase_title: "Professional Digital Menu Designs by Eng. Rabie Elbaz", showcase_sub: "Try live demo",
-                dev_desc: "Expert programmer & web developer – all systems built with high quality standards. 7+ years experience.",
+                work_title: "Our Portfolio – Live Digital Projects", work_sub: "Innovative solutions tailored for the Egyptian market.",
+                dev_desc: "Expert programmer & web developer – all systems built with high quality standards. 7+ years experience in restaurant digital solutions, recruitment platforms, and e-commerce landing pages.",
                 why_title: "Why Ordexa by Eng. Rabie Elbaz?",
                 cta_title: "Start Your 5-Day Free Trial Today", cta_sub: "Get full digital menu + 30% off first 3 months.", cta_btn: "Request Demo →"
             }
@@ -668,20 +649,18 @@
         document.getElementById('langToggleHeader').addEventListener('click', () => {
             updateLanguage(currentLang === 'ar' ? 'en' : 'ar');
         });
-        // Scroll Reveal
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
         }, { threshold: 0.1 });
-        document.querySelectorAll('.service-card, .pricing-card, .menu-card, .stat-item, .cta, .developer-card').forEach(el => {
+        document.querySelectorAll('.service-card, .pricing-card, .work-card, .stat-item, .cta, .developer-card').forEach(el => {
             el.classList.add('fade-up');
             observer.observe(el);
         });
         document.querySelectorAll('.section-title').forEach(el => { el.classList.add('fade-up'); observer.observe(el); });
-        // Mobile menu
         document.getElementById('mobileMenuToggle').addEventListener('click', () => {
             document.getElementById('navLinks').classList.toggle('show');
         });
         updateLanguage('ar');
     </script>
 </body>
-</html>
+    </html>
