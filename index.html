@@ -7,7 +7,6 @@
     <meta name="description" content="حلول رقمية متكاملة: إنشاء مواقع شركات احترافية، منيو إلكتروني للمطاعم والكافيهات، متاجر إلكترونية، وأنظمة طلب متكاملة. تصميم المهندس ربيع الباز.">
     <meta property="og:title" content="Ordexa منصة | حلول رقمية متكاملة">
     <meta property="og:description" content="إنشاء مواقع شركات احترافية، منيو إلكتروني، متاجر إلكترونية - تصميم المهندس ربيع الباز.">
-    <meta property="og:image" content="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg">
     <style>
         * {
             margin: 0;
@@ -25,6 +24,7 @@
             --neon-blue: #2A6DFF;
             --vibrant-purple: #7B3FE4;
             --gradient-primary: linear-gradient(135deg, var(--neon-blue), var(--vibrant-purple));
+            --gradient-logo: linear-gradient(135deg, #2A6DFF, #9B4DFF);
             --gradient-gold: linear-gradient(135deg, #F5AF19, #F12711);
             --gradient-offer: linear-gradient(135deg, #FF416C, #FF4B2B);
             --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.05);
@@ -135,10 +135,12 @@
             align-items: center;
             gap: 1rem;
         }
-        .logo img {
+        /* شعار الهيدر - صورة جديدة */
+        .header-logo-img {
             height: 44px;
             width: auto;
-            border-radius: 8px;
+            max-height: 50px;
+            object-fit: contain;
         }
         .lang-header-btn {
             background: var(--cool-gray);
@@ -188,6 +190,9 @@
             .logo-area {
                 flex: 1;
             }
+            .header-logo-img {
+                height: 38px;
+            }
         }
 
         .hero {
@@ -201,13 +206,11 @@
             position: relative;
             z-index: 3;
         }
-        /* شعار الشركة القديم */
-        .brand-logo {
-            max-width: 100%;
-            text-align: center;
+        /* الشعار الكبير أعلى العنوان */
+        .hero-logo {
             margin-bottom: 1.5rem;
         }
-        .brand-logo img {
+        .hero-logo-img {
             max-width: 280px;
             width: 70%;
             height: auto;
@@ -215,7 +218,7 @@
             display: inline-block;
         }
         @media (max-width: 768px) {
-            .brand-logo img {
+            .hero-logo-img {
                 max-width: 220px;
                 width: 80%;
             }
@@ -420,16 +423,37 @@
             align-items: center;
             gap: 1.5rem;
         }
-        .footer-logo img {
+        .footer-logo-img {
             height: 42px;
+            width: auto;
             filter: brightness(0) invert(1);
+        }
+        .footer-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: #cfdfed;
+            text-decoration: none;
+            font-size: 0.9rem;
         }
         .social-icons {
             display: flex;
             gap: 1rem;
             align-items: center;
         }
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
         .phone-number {
+            font-size: 0.85rem;
+            font-weight: 500;
             background: rgba(255,255,255,0.1);
             padding: 0.35rem 0.8rem;
             border-radius: 40px;
@@ -446,18 +470,17 @@
         @media (max-width: 768px) {
             .container { padding: 0 1.2rem; }
             .pricing-card { min-width: 100%; }
+            .footer-logo-img { height: 35px; }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <div class="container navbar">
             <div class="logo-area">
-                <div class="logo">
-                    <!-- الشعار القديم في الهيدر -->
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg" alt="Ordexa Platform Logo">
-                </div>
+                <!-- شعار الهيدر (صورة) -->
+                <img class="header-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Logo">
                 <button class="lang-header-btn" id="langToggleHeader">English</button>
             </div>
             <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
@@ -479,9 +502,9 @@
             <div class="floating-shape shape2"></div>
             <div class="floating-shape shape3"></div>
             <div class="container hero-content">
-                <!-- الشعار القديم أعلى العنوان -->
-                <div class="brand-logo">
-                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg" alt="Ordexa Brand">
+                <!-- الشعار الكبير أعلى العنوان (صورة) -->
+                <div class="hero-logo">
+                    <img class="hero-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Brand">
                 </div>
                 <h1 data-i18n="hero_title">حلول رقمية متكاملة: منيو إلكتروني، متاجر، ومواقع شركات</h1>
                 <p data-i18n="hero_sub">نصنع لك هوية رقمية قوية: إنشاء مواقع شركات احترافية، منيو إلكتروني للمطاعم والكافيهات، متاجر إلكترونية، وأنظمة طلب متكاملة. جميع الخدمات بتصميم احترافي وإدارة احترافية على يد المهندس ربيع الباز.</p>
@@ -627,8 +650,7 @@
     <footer id="contact">
         <div class="container footer-content">
             <div class="footer-logo">
-                <!-- الشعار القديم في الفوتر -->
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhtnmSQi5vrdg0U-_gOKl1rHS5uGxQ9vLp-iY_OyaRRvOIZz2rs5KdT74X4J17k6Bxr-MrWLdgXy2cyskOfnvKRLLWFyYqUwI-4e6kqNwevzEjpjK8anzc31ScvJhdRxHWtZuZdsaKT7WdJM6SkpoE0CwmMFrA_mDh0CUl9s5tnLNC2k9pj2UadeBansXs/s400/Picsart_26-04-26_14-52-02-688.jpg" alt="Ordexa Platform">
+                <img class="footer-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Platform">
             </div>
             <div class="footer-links">
                 <a href="#home">الرئيسية</a>
@@ -719,7 +741,7 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
         }, { threshold: 0.1 });
-        document.querySelectorAll('.service-card, .pricing-card, .work-card, .template-card, .stat-item, .cta, .developer-card, .brand-logo').forEach(el => {
+        document.querySelectorAll('.service-card, .pricing-card, .work-card, .template-card, .stat-item, .cta, .developer-card, .hero-logo').forEach(el => {
             el.classList.add('fade-up');
             observer.observe(el);
         });
@@ -730,4 +752,4 @@
         updateLanguage('ar');
     </script>
 </body>
-    </html>
+</html>
