@@ -24,7 +24,6 @@
             --neon-blue: #2A6DFF;
             --vibrant-purple: #7B3FE4;
             --gradient-primary: linear-gradient(135deg, var(--neon-blue), var(--vibrant-purple));
-            --gradient-logo: linear-gradient(135deg, #2A6DFF, #9B4DFF);
             --gradient-gold: linear-gradient(135deg, #F5AF19, #F12711);
             --gradient-offer: linear-gradient(135deg, #FF416C, #FF4B2B);
             --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.05);
@@ -161,7 +160,7 @@
             color: var(--deep-navy);
             transition: color 0.2s;
         }
-        .nav-links a:hover {
+        .nav-links a:hover, .nav-links a.active {
             color: var(--neon-blue);
         }
         .mobile-menu-toggle {
@@ -205,21 +204,11 @@
             position: relative;
             z-index: 3;
         }
-        .hero-logo {
-            margin-bottom: 1.5rem;
-        }
         .hero-logo-img {
             max-width: 280px;
             width: 70%;
             height: auto;
-            object-fit: contain;
-            display: inline-block;
-        }
-        @media (max-width: 768px) {
-            .hero-logo-img {
-                max-width: 220px;
-                width: 80%;
-            }
+            margin-bottom: 1.5rem;
         }
         .hero h1 {
             font-size: 2rem;
@@ -271,10 +260,6 @@
             -webkit-background-clip: text;
             color: transparent;
         }
-        .stat-item p {
-            font-weight: 500;
-            color: var(--slate-gray);
-        }
 
         .services-grid, .work-grid, .templates-grid {
             display: grid;
@@ -298,10 +283,6 @@
         .service-icon {
             font-size: 2.4rem;
             margin-bottom: 0.8rem;
-        }
-        .service-card h3, .work-card h3, .template-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
         }
         .template-badge {
             background: var(--gradient-gold);
@@ -445,17 +426,7 @@
             gap: 1rem;
             align-items: center;
         }
-        .social-icons a {
-            color: white;
-            font-size: 1.5rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
         .phone-number {
-            font-size: 0.85rem;
-            font-weight: 500;
             background: rgba(255,255,255,0.1);
             padding: 0.35rem 0.8rem;
             border-radius: 40px;
@@ -479,7 +450,7 @@
         @media (max-width: 768px) {
             .container { padding: 0 1.2rem; }
             .pricing-card { min-width: 100%; }
-            .footer-logo-img { height: 35px; }
+            .hero-logo-img { width: 80%; max-width: 220px; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -493,12 +464,10 @@
             </div>
             <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
             <div class="nav-links" id="navLinks">
-                <a href="#home" data-i18n="nav_home">الرئيسية</a>
-                <a href="#services" data-i18n="nav_services">خدماتنا</a>
-                <a href="#pricing" data-i18n="nav_pricing">الباقات والأسعار</a>
-                <a href="#our-work" data-i18n="nav_work">أعمالنا</a>
-                <a href="#templates" data-i18n="nav_templates">تيمبلتات جاهزة</a>
-                <a href="#contact" data-i18n="nav_contact">اتصل بنا</a>
+                <a href="index.html" class="active" data-i18n="nav_home">الرئيسية</a>
+                <a href="about.html" data-i18n="nav_about">من نحن</a>
+                <a href="login.html" data-i18n="nav_login">تسجيل الدخول</a>
+                <a href="contact.html" data-i18n="nav_contact">اتصل بنا</a>
                 <a href="#demo" class="btn btn-primary" data-i18n="nav_cta">اطلب ديمو مجاني</a>
             </div>
         </div>
@@ -510,14 +479,12 @@
             <div class="floating-shape shape2"></div>
             <div class="floating-shape shape3"></div>
             <div class="container hero-content">
-                <div class="hero-logo">
-                    <img class="hero-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Brand">
-                </div>
+                <img class="hero-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Brand">
                 <h1 data-i18n="hero_title">حلول رقمية متكاملة: منيو إلكتروني، متاجر، ومواقع شركات</h1>
                 <p data-i18n="hero_sub">نصنع لك هوية رقمية قوية: إنشاء مواقع شركات احترافية، منيو إلكتروني للمطاعم والكافيهات، متاجر إلكترونية، وأنظمة طلب متكاملة. جميع الخدمات بتصميم احترافي وإدارة احترافية على يد المهندس ربيع الباز.</p>
                 <div class="hero-buttons">
                     <a href="#pricing" class="btn btn-primary" data-i18n="hero_btn_start">ابدأ تجربة مجانية 5 أيام</a>
-                    <a href="#contact" class="btn btn-outline" data-i18n="hero_btn_contact">تحدث مع خبير</a>
+                    <a href="contact.html" class="btn btn-outline" data-i18n="hero_btn_contact">تحدث مع خبير</a>
                 </div>
             </div>
         </section>
@@ -557,7 +524,7 @@
                     <div class="old-price" data-i18n="old_price_monthly">السعر العادي 699 ج.م</div>
                     <div class="free-trial" data-i18n="free_trial_text">⭐ أول 5 أيام مجانًا تمامًا</div>
                     <p data-i18n="plan_monthly_desc">منيو رقمي كامل، دعم فني، تحديثات غير محدودة.</p>
-                    <a href="#contact" class="btn btn-primary" style="margin-top: 1rem;" data-i18n="btn_start">ابدأ تجربة 5 أيام</a>
+                    <a href="contact.html" class="btn btn-primary" style="margin-top: 1rem;" data-i18n="btn_start">ابدأ تجربة 5 أيام</a>
                 </div>
                 <div class="pricing-card">
                     <div class="offer-badge" data-i18n="offer_badge2">🎁 خصم 30% لمدة 3 شهور</div>
@@ -565,13 +532,13 @@
                     <div class="price">1048 <small>ج.م / 3 شهور</small></div>
                     <div class="old-price" data-i18n="old_price_quarter">الدفع العادي 1497 ج.م</div>
                     <p data-i18n="plan_quarter_desc">وفر 449 ج.م عند الاشتراك لأول 3 أشهر، شامل كل المميزات.</p>
-                    <a href="#contact" class="btn btn-offer" style="margin-top: 1rem;" data-i18n="btn_offer">احصل على الخصم الآن</a>
+                    <a href="contact.html" class="btn btn-offer" style="margin-top: 1rem;" data-i18n="btn_offer">احصل على الخصم الآن</a>
                 </div>
                 <div class="pricing-card">
                     <h3 data-i18n="plan_custom">باقة احترافية مخصصة</h3>
                     <div class="price" data-i18n="custom_price">تواصل معنا</div>
                     <p data-i18n="plan_custom_desc">تصميم كامل الهوية، ربط متعدد القنوات، لوحة تحكم متقدمة.</p>
-                    <a href="#contact" class="btn btn-outline" style="margin-top: 1rem;" data-i18n="btn_custom">طلب عرض سعر</a>
+                    <a href="contact.html" class="btn btn-outline" style="margin-top: 1rem;" data-i18n="btn_custom">طلب عرض سعر</a>
                 </div>
             </div>
         </section>
@@ -647,22 +614,21 @@
             <div class="cta">
                 <h2 data-i18n="cta_title">لا تنتظر – ابدأ تجربتك المجانية لمدة 5 أيام</h2>
                 <p data-i18n="cta_sub">احصل على موقع احترافي أو منيو إلكتروني كامل مع خصم 30% على أول 3 أشهر.</p>
-                <a href="#contact" class="btn btn-primary" data-i18n="cta_btn">اطلب ديمو الآن ←</a>
+                <a href="contact.html" class="btn btn-primary" data-i18n="cta_btn">اطلب ديمو الآن ←</a>
             </div>
         </div>
     </main>
 
-    <footer id="contact">
+    <footer>
         <div class="container footer-content">
             <div class="footer-logo">
-                <img class="footer-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Platform">
+                <img class="footer-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa">
             </div>
             <div class="footer-links">
-                <a href="#home" data-i18n="nav_home">الرئيسية</a>
-                <a href="#services" data-i18n="nav_services">خدماتنا</a>
-                <a href="#pricing" data-i18n="nav_pricing">الباقات</a>
-                <a href="#our-work" data-i18n="nav_work">أعمالنا</a>
-                <a href="#templates" data-i18n="nav_templates">تيمبلتات</a>
+                <a href="index.html" data-i18n="nav_home">الرئيسية</a>
+                <a href="about.html" data-i18n="nav_about">من نحن</a>
+                <a href="login.html" data-i18n="nav_login">تسجيل الدخول</a>
+                <a href="contact.html" data-i18n="nav_contact">اتصل بنا</a>
             </div>
             <div class="social-icons">
                 <a href="https://www.facebook.com/ordexaplatform" target="_blank">
@@ -679,7 +645,7 @@
     <script>
         const translations = {
             ar: {
-                nav_home: "الرئيسية", nav_services: "خدماتنا", nav_pricing: "الباقات", nav_work: "أعمالنا", nav_templates: "تيمبلتات", nav_contact: "اتصل بنا", nav_cta: "اطلب ديمو مجاني",
+                nav_home: "الرئيسية", nav_about: "من نحن", nav_login: "تسجيل الدخول", nav_contact: "اتصل بنا", nav_cta: "اطلب ديمو مجاني",
                 hero_title: "حلول رقمية متكاملة: منيو إلكتروني، متاجر، ومواقع شركات",
                 hero_sub: "نصنع لك هوية رقمية قوية: إنشاء مواقع شركات احترافية، منيو إلكتروني للمطاعم والكافيهات، متاجر إلكترونية، وأنظمة طلب متكاملة. جميع الخدمات بتصميم احترافي وإدارة احترافية على يد المهندس ربيع الباز.",
                 hero_btn_start: "ابدأ تجربة مجانية 5 أيام", hero_btn_contact: "تحدث مع خبير",
@@ -710,7 +676,7 @@
                 copyright: "© 2026 Ordexa Platform – جميع الحقوق محفوظة. تصميم وتطوير المهندس ربيع الباز."
             },
             en: {
-                nav_home: "Home", nav_services: "Services", nav_pricing: "Pricing", nav_work: "Portfolio", nav_templates: "Templates", nav_contact: "Contact", nav_cta: "Get Free Demo",
+                nav_home: "Home", nav_about: "About", nav_login: "Login", nav_contact: "Contact", nav_cta: "Get Free Demo",
                 hero_title: "Integrated Digital Solutions: Digital Menu, E‑stores & Business Websites",
                 hero_sub: "We build a strong digital identity: professional business websites, digital menus for restaurants & cafes, e-commerce stores, and integrated ordering systems. All services with expert design by Eng. Rabie Elbaz.",
                 hero_btn_start: "Start 5-Day Free Trial", hero_btn_contact: "Talk to Expert",
@@ -746,42 +712,25 @@
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang] && translations[lang][key]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                        el.placeholder = translations[lang][key];
-                    } else if (key === 'dev_title') {
-                        // special handling for inner HTML with span
-                        el.innerHTML = translations[lang][key];
-                    } else {
-                        el.innerText = translations[lang][key];
-                    }
+                    if (key === 'dev_title') el.innerHTML = translations[lang][key];
+                    else el.innerText = translations[lang][key];
                 }
             });
-            if (lang === 'en') {
-                document.body.classList.add('en');
-                document.documentElement.setAttribute('dir', 'ltr');
-                document.getElementById('langToggleHeader').innerText = 'العربية';
-            } else {
-                document.body.classList.remove('en');
-                document.documentElement.setAttribute('dir', 'rtl');
-                document.getElementById('langToggleHeader').innerText = 'English';
-            }
+            document.body.classList.toggle('en', lang === 'en');
+            document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            document.getElementById('langToggleHeader').innerText = lang === 'ar' ? 'English' : 'العربية';
             currentLang = lang;
         }
-        document.getElementById('langToggleHeader').addEventListener('click', () => {
-            const newLang = currentLang === 'ar' ? 'en' : 'ar';
-            updateLanguage(newLang);
-        });
+        document.getElementById('langToggleHeader').addEventListener('click', () => updateLanguage(currentLang === 'ar' ? 'en' : 'ar'));
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
         }, { threshold: 0.1 });
-        document.querySelectorAll('.service-card, .pricing-card, .work-card, .template-card, .stat-item, .cta, .developer-card, .hero-logo').forEach(el => {
+        document.querySelectorAll('.service-card, .pricing-card, .work-card, .template-card, .stat-item, .cta, .developer-card, .hero-logo-img, .hero h1, .hero p').forEach(el => {
             el.classList.add('fade-up');
             observer.observe(el);
         });
         document.querySelectorAll('.section-title').forEach(el => { el.classList.add('fade-up'); observer.observe(el); });
-        document.getElementById('mobileMenuToggle').addEventListener('click', () => {
-            document.getElementById('navLinks').classList.toggle('show');
-        });
+        document.getElementById('mobileMenuToggle').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('show'));
         updateLanguage('ar');
     </script>
 </body>
