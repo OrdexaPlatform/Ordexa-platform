@@ -1,1 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد بافلو بونو المبسط</title>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #0A0A0A; color: white; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: #1a1a1a; border-radius: 24px; padding: 20px; }
+        button { background: #F9B23F; border: none; padding: 10px; border-radius: 40px; margin: 5px; cursor: pointer; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; margin: 5px 0; border-radius: 28px; border: none; background: #333; color: white; }
+        .item { background: #2a2a2a; margin: 10px 0; padding: 10px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; background: linear-gradient(135deg, #F9B23F, #FFD966); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #F9B23F; color: black; padding: 8px 16px; border-radius: 50px; opacity: 0; transition: 0.2s; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoNUIF2bdo3Io7Ma3-mlFLhzRsM-kBoFM",
+            authDomain: "ordexa-platforma.firebaseapp.com",
+            projectId: "ordexa-platforma",
+            storageBucket: "ordexa-platforma.firebasestorage.app",
+            messagingSenderId: "443941203542",
+            appId: "1:443941203542:web:1db99037cfec361b2155f7",
+            measurementId: "G-CEGYC1BQPV"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let user = null;
+        let menu = { sections: ["برجر لحم", "برجر دجاج"], items: [], settings: { name: "بافلو بونو" } };
+        let activeCat = "";
+
+        onAuthStateChanged(auth, async (u) => {
+            if (!u) { window.location.href = "login.html"; return; }
+            user = u;
+            document.getElementById("userEmail").innerText = user.email;
+            const ref = doc(db, 'users', user.uid);
+            const snap = await getDoc(ref);
+            if (snap.exists()) menu = snap.data();
+            else {
+                menu = {
+                    sections: ["برجر لحم", "برجر دجاج", "مقليات"],
+                    items: [
+                        { id: "1", cat: "برجر لحم", name: "بافلو كلاسيك", price: 35 },
+                        { id: "2", cat: "برجر دجاج", name: "تشيكن كرسبي", price: 30 }
+                    ],
+                    settings: { name: "بافلو بونو" }
+                };
+                await setDoc(ref, menu);
+            }
+            if (!menu.sections.length) menu.sections = ["برجر لحم"];
+            activeCat = menu.sections[0];
+            render();
+        });
+
+        async function save() { await setDoc(doc(db, 'users', user.uid), menu, { merge: true }); toast("تم الحفظ"); }
+        function toast(msg) { let t = document.getElementById("toast"); t.innerText = msg; t.style.opacity = "1"; setTimeout(() => t.style.opacity = "0", 1500); }
+
+        function render() {
+            document.getElementById("restName").innerText = menu.settings.name;
+            const catsDiv = document.getElementById("cats");
+            catsDiv.innerHTML = "";
+            menu.sections.forEach(sec => {
+                let btn = document.createElement("button");
+                btn.innerText = sec;
+                btn.style.background = activeCat === sec ? "#F9B23F" : "#333";
+                btn.style.color = activeCat === sec ? "black" : "white";
+                btn.onclick = () => { activeCat = sec; render(); };
+                catsDiv.appendChild(btn);
+            });
+            const itemsDiv = document.getElementById("items");
+            itemsDiv.innerHTML = "";
+            let filtered = menu.items.filter(i => i.cat === activeCat);
+            filtered.forEach(item => {
+                let div = document.createElement("div");
+                div.className = "item";
+                div.innerHTML = `
+                    <div><strong>${item.name}</strong> - ${item.price} ج.م</div>
+                    <div><button class="del" data-id="${item.id}">🗑️</button></div>
+                `;
+                itemsDiv.appendChild(div);
+            });
+            document.querySelectorAll(".del").forEach(btn => btn.onclick = async () => {
+                menu.items = menu.items.filter(i => i.id !== btn.getAttribute("data-id"));
+                await save();
+                render();
+            });
+        }
+
+        document.getElementById("logout").onclick = () => signOut(auth);
+        document.getElementById("addItem").onclick = async () => {
+            let name = prompt("اسم الصنف");
+            if (!name) return;
+            let price = parseFloat(prompt("السعر"));
+            if (isNaN(price)) return;
+            menu.items.push({ id: Date.now() + "", cat: activeCat, name, price });
+            await save();
+            render();
+        };
+        document.getElementById("addCat").onclick = async () => {
+            let cat = prompt("اسم القسم");
+            if (cat && !menu.sections.includes(cat)) { menu.sections.push(cat); await save(); render(); }
+            else alert("موجود");
+        };
+        document.getElementById("reset").onclick = async () => {
+            if (confirm("إعادة ضبط البيانات؟")) {
+                menu = {
+                    sections: ["برجر لحم", "برجر دجاج", "مقليات"],
+                    items: [
+                        { id: "1", cat: "برجر لحم", name: "بافلو كلاسيك", price: 35 },
+                        { id: "2", cat: "برجر دجاج", name: "تشيكن كرسبي", price: 30 }
+                    ],
+                    settings: { name: "بافلو بونو" }
+                };
+                await setDoc(doc(db, 'users', user.uid), menu);
+                activeCat = menu.sections[0];
+                render();
+                toast("تم إعادة الضبط");
+            }
+        };
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="logo">🔥 بافلو بونو</div>
+    <h3 id="restName"></h3>
+    <p>مرحباً <span id="userEmail"></span> <button id="logout">خروج</button></p>
+    <div id="cats"></div>
+    <div id="items"></div>
+    <button id="addItem">+ إضافة صنف</button>
+    <button id="addCat">+ إضافة قسم</button>
+    <button id="reset" style="background:#b91c1c;">🔄 إعادة ضبط</button>
+</div>
+<div id="toast" class="toast"></div>
+</body>
+</html>
