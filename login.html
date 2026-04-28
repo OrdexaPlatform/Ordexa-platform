@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>تسجيل الدخول | Ordexa منصة - حلول رقمية متكاملة</title>
-    <!-- Firebase SDK (modular) -->
+    <title>تسجيل الدخول | Ordexa منصة</title>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         
-        // إعدادات Firebase الخاصة بمشروعك
         const firebaseConfig = {
             apiKey: "AIzaSyDoNUIF2bdo3Io7Ma3-mlFLhzRsM-kBoFM",
             authDomain: "ordexa-platforma.firebaseapp.com",
@@ -22,346 +20,145 @@
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const googleProvider = new GoogleAuthProvider();
+        const provider = new GoogleAuthProvider();
         
-        // عناصر DOM
         const loginForm = document.getElementById('loginForm');
         const signupForm = document.getElementById('signupForm');
         const authMessage = document.getElementById('authMessage');
         const googleLoginBtn = document.getElementById('googleLoginBtn');
-        const googleSignupBtn = document.getElementById('googleSignupBtn');
         let currentLang = 'ar';
         
-        // دالة عرض الرسائل
         function showMessage(msg, isError = true) {
             authMessage.textContent = msg;
             authMessage.style.display = 'block';
             authMessage.style.backgroundColor = isError ? '#ffe5e5' : '#e0f7e0';
             authMessage.style.color = isError ? '#c62828' : '#2e7d32';
-            authMessage.style.border = `1px solid ${isError ? '#ffcdd2' : '#c8e6c9'}`;
             setTimeout(() => { authMessage.style.display = 'none'; }, 5000);
         }
         
-        // تسجيل الدخول بالبريد وكلمة المرور
+        // تسجيل الدخول بالبريد
         if (loginForm) {
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('loginEmail').value.trim();
                 const password = document.getElementById('loginPassword').value;
                 if (!email || !password) {
-                    showMessage(currentLang === 'ar' ? 'الرجاء إدخال البريد الإلكتروني وكلمة المرور' : 'Please enter email and password');
+                    showMessage('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
                     return;
                 }
                 try {
                     const userCredential = await signInWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
                     if (!user.emailVerified) {
-                        showMessage(currentLang === 'ar' ? 'يرجى تفعيل حسابك عبر البريد الإلكتروني المرسل إليك' : 'Please verify your email before logging in');
+                        showMessage('يرجى تفعيل حسابك عبر البريد الإلكتروني المرسل إليك');
                         await signOut(auth);
                         return;
                     }
-                    showMessage(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح! جاري التحويل...' : 'Login successful! Redirecting...', false);
-                    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+                    showMessage('تم تسجيل الدخول بنجاح! جاري التحويل...', false);
+                    setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
                 } catch (error) {
-                    let errorMsg = '';
-                    switch (error.code) {
-                        case 'auth/invalid-credential':
-                        case 'auth/user-not-found':
-                        case 'auth/wrong-password':
-                            errorMsg = currentLang === 'ar' ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة' : 'Invalid email or password';
-                            break;
-                        case 'auth/too-many-requests':
-                            errorMsg = currentLang === 'ar' ? 'تم تعطيل الحساب مؤقتاً بسبب كثرة المحاولات' : 'Too many requests. Try later';
-                            break;
-                        default:
-                            errorMsg = error.message;
-                    }
+                    let errorMsg = 'البريد أو كلمة المرور غير صحيحة';
+                    if (error.code === 'auth/too-many-requests') errorMsg = 'تم تعطيل الحساب مؤقتاً';
                     showMessage(errorMsg);
                 }
             });
         }
         
-        // إنشاء حساب جديد بالبريد وكلمة المرور
+        // إنشاء حساب
         if (signupForm) {
             signupForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('signupEmail').value.trim();
                 const password = document.getElementById('signupPassword').value;
-                const confirmPassword = document.getElementById('signupConfirmPassword').value;
-                if (password !== confirmPassword) {
-                    showMessage(currentLang === 'ar' ? 'كلمتا المرور غير متطابقتين' : 'Passwords do not match');
+                const confirm = document.getElementById('signupConfirmPassword').value;
+                if (password !== confirm) {
+                    showMessage('كلمتا المرور غير متطابقتين');
                     return;
                 }
                 if (password.length < 6) {
-                    showMessage(currentLang === 'ar' ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' : 'Password must be at least 6 characters');
+                    showMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
                     return;
                 }
                 try {
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     await sendEmailVerification(userCredential.user);
-                    showMessage(currentLang === 'ar' ? 'تم إنشاء الحساب! تم إرسال رابط التفعيل إلى بريدك. قم بتفعيله ثم سجل الدخول.' : 'Account created! A verification email has been sent. Please verify and then log in.', false);
+                    showMessage('تم إنشاء الحساب! تم إرسال رابط التفعيل إلى بريدك.', false);
                     signupForm.reset();
-                    setTimeout(() => {
-                        const loginLink = document.getElementById('showLogin');
-                        if (loginLink) loginLink.click();
-                    }, 3000);
+                    setTimeout(() => document.getElementById('showLogin')?.click(), 3000);
                 } catch (error) {
-                    let errorMsg = '';
-                    switch (error.code) {
-                        case 'auth/email-already-in-use':
-                            errorMsg = currentLang === 'ar' ? 'هذا البريد مسجل بالفعل' : 'Email already in use';
-                            break;
-                        case 'auth/invalid-email':
-                            errorMsg = currentLang === 'ar' ? 'البريد الإلكتروني غير صالح' : 'Invalid email';
-                            break;
-                        default:
-                            errorMsg = error.message;
-                    }
+                    let errorMsg = 'حدث خطأ، حاول مرة أخرى';
+                    if (error.code === 'auth/email-already-in-use') errorMsg = 'البريد مسجل بالفعل';
                     showMessage(errorMsg);
                 }
             });
         }
         
-        // دالة مشتركة لتسجيل الدخول عبر Google (ستُستخدم للنموذجين)
-        async function handleGoogleSignIn() {
-            try {
-                const result = await signInWithPopup(auth, googleProvider);
-                const user = result.user;
-                showMessage(currentLang === 'ar' ? `مرحباً ${user.displayName || user.email}! جاري التحويل...` : `Welcome ${user.displayName || user.email}! Redirecting...`, false);
-                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-            } catch (error) {
-                let errorMsg = '';
-                if (error.code === 'auth/popup-closed-by-user') {
-                    errorMsg = currentLang === 'ar' ? 'تم إغلاق نافذة تسجيل الدخول قبل إتمام العملية' : 'Login popup was closed before completing';
-                } else if (error.code === 'auth/account-exists-with-different-credential') {
-                    errorMsg = currentLang === 'ar' ? 'يوجد حساب موجود بالفعل بنفس البريد الإلكتروني لكن بطريقة تسجيل مختلفة' : 'An account already exists with the same email but different sign-in method';
-                } else if (error.code === 'auth/unauthorized-domain') {
-                    errorMsg = currentLang === 'ar' ? 'النطاق غير مصرح به. الرجاء إضافة نطاق موقعك في Firebase Console (Authorized domains).' : 'Domain not authorized. Please add your domain to Firebase Console (Authorized domains).';
-                } else {
-                    errorMsg = error.message;
-                }
-                showMessage(errorMsg);
-            }
-        }
-        
-        // ربط أزرار Google
-        if (googleLoginBtn) googleLoginBtn.addEventListener('click', handleGoogleSignIn);
-        if (googleSignupBtn) googleSignupBtn.addEventListener('click', handleGoogleSignIn);
-        
-        window.updateUILanguage = (lang) => { currentLang = lang; };
-    </script>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --deep-navy: #0A1128; --dark-slate: #121E3A; --pure-white: #FFFFFF; --off-white: #F8FAFE; --cool-gray: #EFF3F8; --slate-gray: #5A6E8A; --neon-blue: #2A6DFF; --vibrant-purple: #7B3FE4; --gradient-primary: linear-gradient(135deg, var(--neon-blue), var(--vibrant-purple)); --gradient-logo: linear-gradient(135deg, #2A6DFF, #9B4DFF); --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.05); --shadow-md: 0 20px 35px -10px rgba(0, 0, 0, 0.1); --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        body { font-family: 'Cairo', 'Tajawal', system-ui, sans-serif; background-color: var(--pure-white); color: var(--deep-navy); line-height: 1.5; overflow-x: hidden; }
-        body.en { direction: ltr; font-family: 'Inter', system-ui, sans-serif; text-align: left; }
-        h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; }
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem 1.6rem; border-radius: 50px; font-weight: 600; transition: var(--transition-smooth); cursor: pointer; border: none; font-size: 0.95rem; text-decoration: none; }
-        .btn-primary { background: var(--gradient-primary); color: white; box-shadow: 0 8px 18px rgba(42, 109, 255, 0.25); }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(42, 109, 255, 0.35); }
-        .btn-google { background: white; color: #444; border: 1px solid #ddd; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .btn-google:hover { background: #f5f5f5; transform: translateY(-2px); }
-        .btn-google img { width: 20px; height: 20px; margin-left: 8px; }
-        .divider { display: flex; align-items: center; text-align: center; margin: 1.5rem 0; color: var(--slate-gray); }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--cool-gray); }
-        .divider span { margin: 0 10px; font-size: 0.85rem; }
-        header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); box-shadow: var(--shadow-sm); padding: 0.8rem 0; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
-        .logo-area { display: flex; align-items: center; gap: 1rem; }
-        .header-logo-img { height: 44px; width: auto; max-height: 50px; object-fit: contain; }
-        .lang-header-btn { background: var(--cool-gray); border: none; padding: 0.45rem 1rem; border-radius: 40px; font-weight: 600; cursor: pointer; }
-        .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
-        .nav-links a { text-decoration: none; font-weight: 500; color: var(--deep-navy); transition: color 0.2s; }
-        .nav-links a:hover, .nav-links a.active { color: var(--neon-blue); }
-        .mobile-menu-toggle { display: none; font-size: 1.6rem; background: none; border: none; cursor: pointer; }
-        @media (max-width: 900px) { .nav-links { display: none; width: 100%; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem 0; } .nav-links.show { display: flex; } .mobile-menu-toggle { display: block; } .logo-area { flex: 1; } .header-logo-img { height: 38px; } }
-        .page-hero { background: linear-gradient(135deg, rgba(42,109,255,0.08), transparent); padding: 2.5rem 0; text-align: center; margin-bottom: 2rem; }
-        .auth-card { max-width: 500px; margin: 2rem auto; background: white; border-radius: 32px; padding: 2rem; box-shadow: var(--shadow-md); border: 1px solid var(--cool-gray); }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-        .form-group input { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--cool-gray); border-radius: 28px; font-size: 1rem; font-family: inherit; transition: 0.2s; }
-        .form-group input:focus { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(42,109,255,0.1); }
-        .auth-btn { width: 100%; margin-top: 0.5rem; }
-        .auth-footer { text-align: center; margin-top: 1.5rem; color: var(--slate-gray); }
-        .auth-footer a { color: var(--neon-blue); text-decoration: none; cursor: pointer; font-weight: 600; }
-        .message-box { display: none; padding: 0.8rem; border-radius: 28px; margin-bottom: 1rem; text-align: center; }
-        footer { background: var(--dark-slate); color: #cfdfed; padding: 2.5rem 0 1.5rem; margin-top: 3rem; }
-        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem; }
-        .footer-logo-img { height: 42px; width: auto; filter: brightness(0) invert(1); }
-        .footer-links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
-        .footer-links a { color: #cfdfed; text-decoration: none; font-size: 0.9rem; }
-        .social-icons { display: flex; gap: 1rem; align-items: center; }
-        .phone-number { background: rgba(255,255,255,0.1); padding: 0.35rem 0.8rem; border-radius: 40px; }
-        .copyright { text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; }
-        @media (max-width: 768px) { .container { padding: 0 1.2rem; } }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <div class="container navbar">
-            <div class="logo-area">
-                <img class="header-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Logo">
-                <button class="lang-header-btn" id="langToggleHeader">English</button>
-            </div>
-            <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
-            <div class="nav-links" id="navLinks">
-                <a href="index.html" data-i18n="nav_home">الرئيسية</a>
-                <a href="about.html" data-i18n="nav_about">من نحن</a>
-                <a href="login.html" class="active" data-i18n="nav_login">تسجيل الدخول</a>
-                <a href="contact.html" data-i18n="nav_contact">اتصل بنا</a>
-                <a href="#demo" class="btn btn-primary" data-i18n="nav_cta">اطلب ديمو مجاني</a>
-            </div>
-        </div>
-    </header>
-
-    <main>
-        <div class="page-hero">
-            <div class="container">
-                <h1 data-i18n="login_main_title">مرحباً بعودتك</h1>
-                <p data-i18n="login_main_sub">سجل الدخول أو أنشئ حساباً جديداً للوصول إلى خدمات Ordexa</p>
-            </div>
-        </div>
-
-        <div class="container">
-            <!-- بطاقة تسجيل الدخول -->
-            <div id="loginCard" class="auth-card">
-                <div id="authMessage" class="message-box"></div>
-                <!-- زر Google داخل بطاقة تسجيل الدخول -->
-                <button id="googleLoginBtn" class="btn btn-google auth-btn">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> تسجيل الدخول عبر Google
-                </button>
-                <div class="divider"><span>أو</span></div>
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label data-i18n="email_label">البريد الإلكتروني</label>
-                        <input type="email" id="loginEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="password_label">كلمة المرور</label>
-                        <input type="password" id="loginPassword" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary auth-btn" data-i18n="login_btn">تسجيل الدخول</button>
-                    <div class="auth-footer">
-                        <p><span data-i18n="no_account">ليس لديك حساب؟</span> <a id="showSignup" style="cursor:pointer; font-weight:bold; text-decoration:underline;" data-i18n="create_account">إنشاء حساب جديد</a></p>
-                    </div>
-                </form>
-            </div>
-
-            <!-- بطاقة إنشاء حساب جديد -->
-            <div id="signupCard" class="auth-card" style="display: none;">
-                <!-- زر Google داخل بطاقة إنشاء الحساب -->
-                <button id="googleSignupBtn" class="btn btn-google auth-btn">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> إنشاء حساب عبر Google
-                </button>
-                <div class="divider"><span>أو</span></div>
-                <form id="signupForm">
-                    <div class="form-group">
-                        <label data-i18n="email_label">البريد الإلكتروني</label>
-                        <input type="email" id="signupEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="password_label">كلمة المرور</label>
-                        <input type="password" id="signupPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="confirm_password">تأكيد كلمة المرور</label>
-                        <input type="password" id="signupConfirmPassword" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary auth-btn" data-i18n="signup_btn">إنشاء حساب</button>
-                    <div class="auth-footer">
-                        <p><span data-i18n="have_account">لديك حساب بالفعل؟</span> <a id="showLogin" style="cursor:pointer; font-weight:bold; text-decoration:underline;" data-i18n="login_here">تسجيل الدخول</a></p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <div class="container footer-content">
-            <div class="footer-logo">
-                <img class="footer-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa">
-            </div>
-            <div class="footer-links">
-                <a href="index.html">الرئيسية</a>
-                <a href="about.html">من نحن</a>
-                <a href="login.html">تسجيل الدخول</a>
-                <a href="contact.html">اتصل بنا</a>
-            </div>
-            <div class="social-icons">
-                <a href="https://www.facebook.com/ordexaplatform" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/></svg></a>
-                <a href="tel:01120687989" class="phone-number">📞 01120687989</a>
-            </div>
-        </div>
-        <div class="container copyright">
-            <p data-i18n="copyright">© 2026 Ordexa Platform – جميع الحقوق محفوظة. تصميم وتطوير المهندس ربيع الباز.</p>
-        </div>
-    </footer>
-
-    <script>
-        // ترجمات الواجهة
-        const translations = {
-            ar: {
-                nav_home: "الرئيسية", nav_about: "من نحن", nav_login: "تسجيل الدخول", nav_contact: "اتصل بنا", nav_cta: "اطلب ديمو مجاني",
-                login_main_title: "مرحباً بعودتك", login_main_sub: "سجل الدخول أو أنشئ حساباً جديداً للوصول إلى خدمات Ordexa",
-                email_label: "البريد الإلكتروني", password_label: "كلمة المرور", login_btn: "تسجيل الدخول",
-                no_account: "ليس لديك حساب؟", create_account: "إنشاء حساب جديد",
-                confirm_password: "تأكيد كلمة المرور", signup_btn: "إنشاء حساب", have_account: "لديك حساب بالفعل؟", login_here: "تسجيل الدخول",
-                copyright: "© 2026 Ordexa Platform – جميع الحقوق محفوظة. تصميم وتطوير المهندس ربيع الباز."
-            },
-            en: {
-                nav_home: "Home", nav_about: "About", nav_login: "Login", nav_contact: "Contact", nav_cta: "Get Free Demo",
-                login_main_title: "Welcome Back", login_main_sub: "Sign in or create a new account to access Ordexa services",
-                email_label: "Email Address", password_label: "Password", login_btn: "Login",
-                no_account: "Don't have an account?", create_account: "Create new account",
-                confirm_password: "Confirm Password", signup_btn: "Sign Up", have_account: "Already have an account?", login_here: "Login",
-                copyright: "© 2026 Ordexa Platform – All rights reserved. Designed & developed by Eng. Rabie Elbaz."
-            }
-        };
-        
-        let currentLang = 'ar';
-        function updateLanguage(lang) {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    if (el.tagName === 'A' && (el.id === 'showSignup' || el.id === 'showLogin')) {
-                        el.innerText = translations[lang][key];
-                    } else {
-                        el.innerText = translations[lang][key];
-                    }
+        // Google Sign-In
+        if (googleLoginBtn) {
+            googleLoginBtn.addEventListener('click', async () => {
+                try {
+                    const result = await signInWithPopup(auth, provider);
+                    showMessage(`مرحباً ${result.user.displayName || result.user.email}! جاري التحويل...`, false);
+                    setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+                } catch (error) {
+                    let errorMsg = 'فشل تسجيل الدخول عبر جوجل';
+                    if (error.code === 'auth/popup-closed-by-user') errorMsg = 'تم إغلاق النافذة قبل إتمام تسجيل الدخول';
+                    else if (error.code === 'auth/unauthorized-domain') errorMsg = 'النطاق غير مصرح به، الرجاء إضافة النطاق في Firebase Console (Authorized domains)';
+                    showMessage(errorMsg);
                 }
             });
-            document.body.classList.toggle('en', lang === 'en');
-            document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-            document.getElementById('langToggleHeader').innerText = lang === 'ar' ? 'English' : 'العربية';
-            currentLang = lang;
-            if (window.updateUILanguage) window.updateUILanguage(lang);
         }
         
-        // وظيفة تبديل البطاقات
-        function toggleCards(showSignup) {
-            const loginCard = document.getElementById('loginCard');
-            const signupCard = document.getElementById('signupCard');
-            if (showSignup) {
-                loginCard.style.display = 'none';
-                signupCard.style.display = 'block';
-            } else {
-                signupCard.style.display = 'none';
-                loginCard.style.display = 'block';
-            }
-        }
-        
-        // ربط أزرار التبديل (تأكد من وجود العناصر)
-        const showSignupBtn = document.getElementById('showSignup');
-        const showLoginBtn = document.getElementById('showLogin');
-        if (showSignupBtn) showSignupBtn.onclick = () => toggleCards(true);
-        if (showLoginBtn) showLoginBtn.onclick = () => toggleCards(false);
-        
-        document.getElementById('langToggleHeader').addEventListener('click', () => updateLanguage(currentLang === 'ar' ? 'en' : 'ar'));
-        document.getElementById('mobileMenuToggle').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('show'));
-        updateLanguage('ar');
+        // التبديل بين بطاقات تسجيل الدخول وإنشاء الحساب
+        document.getElementById('showSignup').onclick = () => {
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('signupCard').style.display = 'block';
+        };
+        document.getElementById('showLogin').onclick = () => {
+            document.getElementById('signupCard').style.display = 'none';
+            document.getElementById('loginCard').style.display = 'block';
+        };
     </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background: #f5f7fc; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .auth-card { max-width: 450px; width: 90%; background: white; border-radius: 32px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 1rem; }
+        .btn-primary { background: linear-gradient(135deg, #2A6DFF, #7B3FE4); color: white; border: none; padding: 0.8rem; width: 100%; border-radius: 50px; font-weight: bold; cursor: pointer; }
+        .btn-google { background: white; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 0.7rem; border-radius: 50px; cursor: pointer; margin-bottom: 1rem; }
+        .divider { text-align: center; margin: 1rem 0; color: #aaa; }
+        .form-group { margin-bottom: 1rem; }
+        input { width: 100%; padding: 0.7rem; border-radius: 28px; border: 1px solid #ddd; }
+        .auth-footer { text-align: center; margin-top: 1rem; }
+        .auth-footer a { color: #2A6DFF; cursor: pointer; text-decoration: underline; }
+        .message-box { padding: 0.7rem; border-radius: 28px; margin-bottom: 1rem; text-align: center; display: none; }
+        h2 { text-align: center; margin-bottom: 1.5rem; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div>
+        <div id="loginCard" class="auth-card">
+            <h2>🔐 تسجيل الدخول</h2>
+            <div id="authMessage" class="message-box"></div>
+            <button id="googleLoginBtn" class="btn-google"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> تسجيل الدخول عبر Google</button>
+            <div class="divider">أو</div>
+            <form id="loginForm">
+                <div class="form-group"><input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required></div>
+                <div class="form-group"><input type="password" id="loginPassword" placeholder="كلمة المرور" required></div>
+                <button type="submit" class="btn-primary">تسجيل الدخول</button>
+                <div class="auth-footer">ليس لديك حساب؟ <a id="showSignup">إنشاء حساب جديد</a></div>
+            </form>
+        </div>
+        <div id="signupCard" class="auth-card" style="display: none;">
+            <h2>📝 إنشاء حساب جديد</h2>
+            <form id="signupForm">
+                <div class="form-group"><input type="email" id="signupEmail" placeholder="البريد الإلكتروني" required></div>
+                <div class="form-group"><input type="password" id="signupPassword" placeholder="كلمة المرور" required></div>
+                <div class="form-group"><input type="password" id="signupConfirmPassword" placeholder="تأكيد كلمة المرور" required></div>
+                <button type="submit" class="btn-primary">إنشاء حساب</button>
+                <div class="auth-footer">لديك حساب؟ <a id="showLogin">تسجيل الدخول</a></div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
