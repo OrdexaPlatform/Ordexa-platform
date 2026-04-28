@@ -8,7 +8,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
         
         const firebaseConfig = {
@@ -32,13 +32,11 @@
         const userNameSpan = document.getElementById('userName');
         const logoutBtn = document.getElementById('logoutBtn');
         const templateGrid = document.getElementById('templateGrid');
-        const editorArea = document.getElementById('editorArea');
         const livePreview = document.getElementById('livePreview');
-        const saveTemplateBtn = document.getElementById('saveTemplateBtn');
         
         let currentUser = null;
-        let currentTemplate = 't1'; // القالب المختار
-        let userData = { sections: [], items: [], settings: {} };
+        let currentTemplate = 't1';
+        let userData = { sections: [], items: [], settings: { template: 't1', restaurantName: 'مطعمي' } };
         
         // ========== 1. التحقق من تسجيل الدخول ==========
         onAuthStateChanged(auth, async (user) => {
@@ -52,30 +50,31 @@
             userNameSpan.textContent = user.displayName || user.email || 'عميل Ordexa';
             
             await loadUserData();
-            await loadSettings();
             renderTemplates();
             renderLivePreview();
         });
         
-        // ========== 2. تحميل بيانات العميل ==========
+        // ========== 2. تحميل بيانات العميل أو إنشاء بيانات افتراضية ==========
         async function loadUserData() {
             const userRef = doc(db, 'users', currentUser.uid);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
                 userData = userSnap.data();
             } else {
+                // بيانات افتراضية لتجربة القوالب فوراً
                 userData = {
-                    sections: ['مقبلات', 'رئيسية', 'مشروبات', 'حلويات'],
-                    items: [],
-                    settings: { template: 't1', colors: {}, fonts: {} }
+                    sections: ['مقبلات', 'أطباق رئيسية', 'مشروبات', 'حلويات'],
+                    items: [
+                        { id: '1', nameAr: 'شاورما دجاج', nameEn: 'Chicken Shawarma', price: 60, section: 'أطباق رئيسية', descAr: 'شاورما لذيذة مع خبز وثوم', imageUrl: null },
+                        { id: '2', nameAr: 'سلطة خضراء', nameEn: 'Green Salad', price: 35, section: 'مقبلات', descAr: 'سلطة طازجة', imageUrl: null },
+                        { id: '3', nameAr: 'عصير برتقال', nameEn: 'Orange Juice', price: 25, section: 'مشروبات', descAr: 'طبيعي 100%', imageUrl: null },
+                        { id: '4', nameAr: 'كنافة', nameEn: 'Kunafa', price: 45, section: 'حلويات', descAr: 'كنافة ناعمة', imageUrl: null }
+                    ],
+                    settings: { template: 't1', restaurantName: 'مطعم النخبة' }
                 };
                 await setDoc(userRef, userData);
             }
             currentTemplate = userData.settings?.template || 't1';
-        }
-        
-        async function loadSettings() {
-            // سيتم استخدامها لاحقاً للإعدادات
         }
         
         async function saveUserData() {
@@ -83,13 +82,13 @@
             await setDoc(userRef, userData, { merge: true });
         }
         
-        // ========== 3. عرض القوالب (صور + أزرار اختيار) ==========
+        // ========== 3. القوالب الجاهزة (صور + أسماء) ==========
         const templatesList = [
-            { id: 't1', name: 'كلاسيكي', image: 'https://placehold.co/400x300/0A1128/white?text=Classic+Template' },
-            { id: 't2', name: 'عصري', image: 'https://placehold.co/400x300/2A6DFF/white?text=Modern+Template' },
-            { id: 't3', name: 'ليلي', image: 'https://placehold.co/400x300/1a1a2e/white?text=Night+Template' },
-            { id: 't4', name: 'تبويبات', image: 'https://placehold.co/400x300/7B3FE4/white?text=Tabs+Template' },
-            { id: 't5', name: 'بسيط', image: 'https://placehold.co/400x300/5A6E8A/white?text=Simple+Template' }
+            { id: 't1', name: 'كلاسيكي أنيق', image: 'https://placehold.co/400x300/0A1128/white?text=Classic+Template' },
+            { id: 't2', name: 'عصري مشرق', image: 'https://placehold.co/400x300/2A6DFF/white?text=Modern+Template' },
+            { id: 't3', name: 'ليلي فاخر', image: 'https://placehold.co/400x300/1a1a2e/white?text=Night+Template' },
+            { id: 't4', name: 'تبويبات ذكية', image: 'https://placehold.co/400x300/7B3FE4/white?text=Tabs+Template' },
+            { id: 't5', name: 'بسيط وسريع', image: 'https://placehold.co/400x300/5A6E8A/white?text=Simple+Template' }
         ];
         
         function renderTemplates() {
@@ -116,9 +115,8 @@
             });
         }
         
-        // ========== 4. المحرر المرئي الحي (Live Editor) ==========
-        async function renderLivePreview() {
-            // بناء HTML للقالب بناءً على بيانات العميل والقالب المختار
+        // ========== 4. عرض المنيو الحي (Live Preview) ==========
+        function renderLivePreview() {
             let html = `<div class="menu-header"><h2 contenteditable="true" id="restaurantName">${userData.settings?.restaurantName || 'مطعمي'}</h2></div>`;
             html += `<div class="menu-sections">`;
             for (let section of userData.sections) {
@@ -129,8 +127,8 @@
                 for (let item of sectionItems) {
                     html += `<div class="menu-item" data-item-id="${item.id}">
                                 <div class="item-image">
-                                    <img src="${item.imageUrl || 'https://placehold.co/100x100'}" alt="${item.nameAr}" style="width:80px;height:80px;object-fit:cover;border-radius:16px;">
-                                    <button class="change-image-btn" data-id="${item.id}">🖼️ تغيير الصورة</button>
+                                    <img src="${item.imageUrl || 'https://placehold.co/100x100'}" style="width:80px;height:80px;object-fit:cover;border-radius:16px;">
+                                    <button class="change-image-btn" data-id="${item.id}">🖼️ تغيير</button>
                                 </div>
                                 <div class="item-details">
                                     <div class="item-name" contenteditable="true">${item.nameAr}</div>
@@ -144,13 +142,11 @@
             }
             html += `</div><button id="addSectionBtn">+ إضافة قسم جديد</button>`;
             livePreview.innerHTML = html;
-            
-            // ربط الأحداث للتعديل المباشر وحذف الأصناف وإضافة أصناف
-            attachLiveEditorEvents();
+            attachLiveEvents();
         }
         
-        function attachLiveEditorEvents() {
-            // تعديل النصوص (contenteditable) -> حفظ تلقائي
+        function attachLiveEvents() {
+            // تعديل النصوص
             document.querySelectorAll('[contenteditable="true"]').forEach(el => {
                 el.addEventListener('blur', async (e) => {
                     const target = e.target;
@@ -158,26 +154,20 @@
                         const oldSection = target.parentElement.getAttribute('data-section');
                         const newName = target.innerText.trim();
                         if (newName && newName !== oldSection) {
-                            // تحديث اسم القسم في userData.sections والأصناف المرتبطة
                             const index = userData.sections.indexOf(oldSection);
                             if (index !== -1) userData.sections[index] = newName;
-                            userData.items.forEach(item => {
-                                if (item.section === oldSection) item.section = newName;
-                            });
+                            userData.items.forEach(item => { if (item.section === oldSection) item.section = newName; });
                             await saveUserData();
                             renderLivePreview();
                         }
                     } else if (target.classList.contains('item-name')) {
                         const itemId = target.closest('.menu-item').getAttribute('data-item-id');
                         const item = userData.items.find(i => i.id === itemId);
-                        if (item) {
-                            item.nameAr = target.innerText.trim();
-                            await saveUserData();
-                        }
+                        if (item) { item.nameAr = target.innerText.trim(); await saveUserData(); }
                     } else if (target.classList.contains('item-price')) {
                         const itemId = target.closest('.menu-item').getAttribute('data-item-id');
                         const item = userData.items.find(i => i.id === itemId);
-                        if (item) {
+                        if (item) { 
                             let price = parseFloat(target.innerText.replace(' ج.م', ''));
                             if (!isNaN(price)) item.price = price;
                             await saveUserData();
@@ -185,10 +175,7 @@
                     } else if (target.classList.contains('item-desc')) {
                         const itemId = target.closest('.menu-item').getAttribute('data-item-id');
                         const item = userData.items.find(i => i.id === itemId);
-                        if (item) {
-                            item.descAr = target.innerText.trim();
-                            await saveUserData();
-                        }
+                        if (item) { item.descAr = target.innerText.trim(); await saveUserData(); }
                     } else if (target.id === 'restaurantName') {
                         userData.settings.restaurantName = target.innerText.trim();
                         await saveUserData();
@@ -213,10 +200,7 @@
                                 const item = userData.items.find(i => i.id === itemId);
                                 if (item) {
                                     if (item.imageUrl) {
-                                        try {
-                                            const oldRef = ref(storage, item.imageUrl);
-                                            await deleteObject(oldRef);
-                                        } catch(e) {}
+                                        try { await deleteObject(ref(storage, item.imageUrl)); } catch(e) {}
                                     }
                                     item.imageUrl = downloadURL;
                                     await saveUserData();
@@ -233,7 +217,7 @@
             document.querySelectorAll('.delete-item-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const itemId = btn.getAttribute('data-id');
-                    if (confirm('هل تريد حذف هذا الصنف نهائياً؟')) {
+                    if (confirm('حذف هذا الصنف؟')) {
                         userData.items = userData.items.filter(i => i.id !== itemId);
                         await saveUserData();
                         renderLivePreview();
@@ -241,23 +225,18 @@
                 });
             });
             
-            // إضافة صنف جديد (نافذة بسيطة)
+            // إضافة صنف
             document.querySelectorAll('.add-item-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const section = btn.getAttribute('data-section');
-                    const newName = prompt('أدخل اسم الصنف (عربي):');
+                    const newName = prompt('اسم الصنف (عربي):');
                     if (!newName) return;
-                    const newPrice = parseFloat(prompt('أدخل السعر (ج.م):'));
+                    const newPrice = parseFloat(prompt('السعر (ج.م):'));
                     if (isNaN(newPrice)) return;
                     const newItem = {
                         id: Date.now().toString(),
-                        nameAr: newName,
-                        nameEn: newName,
-                        price: newPrice,
-                        section: section,
-                        descAr: '',
-                        descEn: '',
-                        imageUrl: null
+                        nameAr: newName, nameEn: newName, price: newPrice,
+                        section: section, descAr: '', descEn: '', imageUrl: null
                     };
                     userData.items.push(newItem);
                     await saveUserData();
@@ -265,27 +244,21 @@
                 });
             });
             
-            // إضافة قسم جديد
+            // إضافة قسم
             const addSectionBtn = document.getElementById('addSectionBtn');
             if (addSectionBtn) {
                 addSectionBtn.addEventListener('click', async () => {
-                    const newSection = prompt('أدخل اسم القسم الجديد:');
+                    const newSection = prompt('اسم القسم الجديد:');
                     if (newSection && !userData.sections.includes(newSection)) {
                         userData.sections.push(newSection);
                         await saveUserData();
                         renderLivePreview();
-                    } else if (userData.sections.includes(newSection)) {
-                        alert('هذا القسم موجود بالفعل');
-                    }
+                    } else if (userData.sections.includes(newSection)) alert('هذا القسم موجود بالفعل');
                 });
             }
         }
         
-        // تسجيل الخروج
-        logoutBtn.addEventListener('click', async () => {
-            await signOut(auth);
-            window.location.href = 'login.html';
-        });
+        logoutBtn.addEventListener('click', async () => { await signOut(auth); window.location.href = 'login.html'; });
     </script>
     
     <style>
@@ -336,10 +309,7 @@
         </aside>
         <main class="main-area">
             <h2>مرحباً, <span id="userName"></span> 👋</h2>
-            <div id="editorArea">
-                <div id="livePreview" class="live-preview"></div>
-                <button id="saveTemplateBtn" style="display:none;">حفظ القالب</button>
-            </div>
+            <div id="livePreview" class="live-preview"></div>
         </main>
     </div>
 </body>
