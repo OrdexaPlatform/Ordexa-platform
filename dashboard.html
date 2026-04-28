@@ -61,7 +61,6 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
         
-        // DOM elements
         const authGuard = document.getElementById('authGuard');
         const dashboard = document.getElementById('dashboardContent');
         const userNameSpan = document.getElementById('userName');
@@ -288,10 +287,11 @@
         }
         
         function updateMenuLink() {
-            // 👇 الرابط الآن لـ menu1.html (وليس menu1.index)
+            // ✅ التعديل الوحيد: تغيير اسم الملف إلى menu1.html
             const link = `${window.location.origin}/menu1.html?uid=${currentUser.uid}`;
             menuLinkSpan.textContent = link;
         }
+        
         copyLinkBtn.onclick = () => {
             navigator.clipboard.writeText(menuLinkSpan.textContent);
             alert('تم نسخ رابط المنيو');
