@@ -3,7 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>لوحة تحكم Ordexa - منصة المنيو الذكية</title>
+    <title>لوحة تحكم Ordexa | منصة المنيو الذكية</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cairo', sans-serif; background: #f5f7fc; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 320px; background: white; border-left: 1px solid #e2e8f0; padding: 1.5rem; overflow-y: auto; box-shadow: 0 0 15px rgba(0,0,0,0.02); }
+        .main-area { flex: 1; padding: 1.5rem; overflow-y: auto; }
+        .logo-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .logo-img { height: 44px; }
+        .logout-btn { background: #f1f5f9; border: none; padding: 0.4rem 1rem; border-radius: 40px; cursor: pointer; font-weight: 500; }
+        .sidebar-nav { margin-top: 1rem; }
+        .nav-item { padding: 0.7rem 1rem; margin: 0.3rem 0; border-radius: 28px; cursor: pointer; transition: 0.2s; font-weight: 600; color: #1e293b; }
+        .nav-item:hover, .nav-item.active { background: #eef2ff; color: #2A6DFF; }
+        .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .template-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; transition: transform 0.2s; cursor: pointer; border: 2px solid transparent; }
+        .template-card.selected { border-color: #2A6DFF; box-shadow: 0 4px 12px rgba(42,109,255,0.2); }
+        .template-card img { width: 100%; height: 100px; object-fit: cover; background: #f1f5f9; }
+        .template-card h4 { font-size: 0.85rem; margin: 0.5rem 0; color: #1e293b; }
+        .preview-card { background: white; border-radius: 28px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+        .menu-header input, .menu-header textarea { width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 28px; }
+        .telegram-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin: 1rem 0; }
+        .telegram-row input { flex: 1; padding: 0.5rem 1rem; border-radius: 28px; border: 1px solid #cbd5e1; }
+        .section-card { border-bottom: 1px solid #e2e8f0; margin-bottom: 1rem; padding-bottom: 0.8rem; }
+        .section-title { font-weight: 700; font-size: 1.3rem; margin: 0.5rem 0; display: inline-block; }
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 1rem; margin-top: 0.5rem; }
+        .menu-item { background: #f8fafc; border-radius: 20px; padding: 0.8rem; display: flex; gap: 0.8rem; align-items: center; }
+        .item-img { width: 70px; height: 70px; border-radius: 16px; object-fit: cover; background: #e2e8f0; }
+        .item-info { flex: 1; }
+        .item-name { font-weight: bold; }
+        .item-price { color: #2A6DFF; font-weight: bold; }
+        .btn-icon { background: #e2e8f0; border: none; padding: 0.3rem 0.8rem; border-radius: 30px; cursor: pointer; font-size: 0.75rem; }
+        .btn-danger { background: #fee2e2; color: #b91c1c; }
+        .btn-primary { background: #2A6DFF; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 40px; cursor: pointer; }
+        .add-btn { background: #eef2ff; color: #2A6DFF; border: none; padding: 0.4rem 1rem; border-radius: 40px; margin-top: 0.5rem; cursor: pointer; }
+        @media (max-width: 768px) { .dashboard-container { flex-direction: column; } .sidebar { width: 100%; } }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -25,31 +62,35 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
         
-        // عناصر DOM
+        // DOM elements
         const authGuard = document.getElementById('authGuard');
-        const dashboardContent = document.getElementById('dashboardContent');
+        const dashboard = document.getElementById('dashboardContent');
         const userNameSpan = document.getElementById('userName');
         const logoutBtn = document.getElementById('logoutBtn');
-        const templateGrid = document.getElementById('templateGrid');
-        const livePreview = document.getElementById('livePreview');
+        const templateGrid = document.getElementById('templatesGrid');
+        const livePreviewDiv = document.getElementById('livePreview');
         const menuLinkSpan = document.getElementById('menuLinkSpan');
         const copyLinkBtn = document.getElementById('copyLinkBtn');
         
         let currentUser = null;
-        let currentTemplate = 't1';
-        let userData = { sections: [], items: [], settings: { template: 't1', restaurantName: 'مطعمي', telegramBot: '', telegramChat: '' } };
+        let userData = { sections: [], items: [], settings: {} };
         
-        // ========== 1. التحقق من تسجيل الدخول ==========
+        // قوالب مع صور من مصادر مجانية (يمكنك استبدالها بأي صور)
+        const templatesList = [
+            { id: 'classic', name: 'كلاسيكي أنيق', image: 'https://picsum.photos/id/104/300/200' },
+            { id: 'modern', name: 'عصري مشرق', image: 'https://picsum.photos/id/20/300/200' },
+            { id: 'dark', name: 'ليلي فاخر', image: 'https://picsum.photos/id/29/300/200' },
+            { id: 'tabs', name: 'تبويبات ذكية', image: 'https://picsum.photos/id/94/300/200' },
+            { id: 'simple', name: 'بسيط وسريع', image: 'https://picsum.photos/id/96/300/200' },
+            { id: 'bono', name: 'بافلو بونو', image: 'https://picsum.photos/id/106/300/200' }
+        ];
+        
         onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
-            }
+            if (!user) { window.location.href = 'login.html'; return; }
             currentUser = user;
             authGuard.style.display = 'none';
-            dashboardContent.style.display = 'flex';
-            userNameSpan.textContent = user.displayName || user.email || 'عميل Ordexa';
-            
+            dashboard.style.display = 'flex';
+            userNameSpan.textContent = user.displayName || user.email || 'عميل';
             await loadUserData();
             renderTemplates();
             renderLivePreview();
@@ -57,310 +98,259 @@
         });
         
         async function loadUserData() {
-            const userRef = doc(db, 'users', currentUser.uid);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-                userData = userSnap.data();
-                if (!userData.settings) userData.settings = {};
-                if (!userData.settings.telegramBot) userData.settings.telegramBot = '';
-                if (!userData.settings.telegramChat) userData.settings.telegramChat = '';
+            const docRef = doc(db, 'users', currentUser.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                userData = docSnap.data();
             } else {
                 userData = {
                     sections: ['مقبلات', 'أطباق رئيسية', 'مشروبات', 'حلويات'],
                     items: [
-                        { id: '1', nameAr: 'شاورما دجاج', nameEn: 'Chicken Shawarma', price: 60, section: 'أطباق رئيسية', descAr: 'شاورما لذيذة', imageUrl: null },
-                        { id: '2', nameAr: 'سلطة خضراء', nameEn: 'Green Salad', price: 35, section: 'مقبلات', descAr: 'سلطة طازجة', imageUrl: null },
-                        { id: '3', nameAr: 'عصير برتقال', nameEn: 'Orange Juice', price: 25, section: 'مشروبات', descAr: 'طبيعي 100%', imageUrl: null },
-                        { id: '4', nameAr: 'كنافة', nameEn: 'Kunafa', price: 45, section: 'حلويات', descAr: 'كنافة ناعمة', imageUrl: null }
+                        { id: '1', nameAr: 'شاورما دجاج', price: 60, section: 'أطباق رئيسية', descAr: 'شاورما لذيذة', imageUrl: null },
+                        { id: '2', nameAr: 'سلطة خضراء', price: 35, section: 'مقبلات', descAr: 'طازجة', imageUrl: null },
+                        { id: '3', nameAr: 'عصير برتقال', price: 25, section: 'مشروبات', descAr: 'طبيعي', imageUrl: null }
                     ],
-                    settings: { template: 't1', restaurantName: 'مطعم النخبة', telegramBot: '', telegramChat: '' }
+                    settings: { template: 'classic', restaurantName: 'مطعم النخبة', telegramBot: '', telegramChat: '' }
                 };
-                await setDoc(userRef, userData);
+                await setDoc(docRef, userData);
             }
-            currentTemplate = userData.settings?.template || 't1';
         }
         
         async function saveUserData() {
-            const userRef = doc(db, 'users', currentUser.uid);
-            await setDoc(userRef, userData, { merge: true });
+            const docRef = doc(db, 'users', currentUser.uid);
+            await setDoc(docRef, userData, { merge: true });
         }
-        
-        const templatesList = [
-            { id: 't1', name: 'كلاسيكي أنيق', image: 'https://placehold.co/400x300/0A1128/white?text=Classic' },
-            { id: 't2', name: 'عصري مشرق', image: 'https://placehold.co/400x300/2A6DFF/white?text=Modern' },
-            { id: 't3', name: 'ليلي فاخر', image: 'https://placehold.co/400x300/1a1a2e/white?text=Night' },
-            { id: 't4', name: 'تبويبات ذكية', image: 'https://placehold.co/400x300/7B3FE4/white?text=Tabs' },
-            { id: 't5', name: 'بسيط وسريع', image: 'https://placehold.co/400x300/5A6E8A/white?text=Simple' },
-            { id: 'bono', name: 'بافلو بونو (احترافي)', image: 'https://placehold.co/400x300/F9B23F/0A0A0A?text=Bono' }
-        ];
         
         function renderTemplates() {
             templateGrid.innerHTML = '';
             templatesList.forEach(tpl => {
                 const card = document.createElement('div');
-                card.className = 'template-card';
-                card.innerHTML = `
-                    <img src="${tpl.image}" alt="${tpl.name}">
-                    <h4>${tpl.name}</h4>
-                    <button class="select-template-btn" data-id="${tpl.id}">اختر هذا القالب</button>
-                `;
-                templateGrid.appendChild(card);
-            });
-            document.querySelectorAll('.select-template-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const newTemplate = btn.getAttribute('data-id');
-                    currentTemplate = newTemplate;
-                    userData.settings = { ...userData.settings, template: newTemplate };
+                card.className = `template-card ${userData.settings?.template === tpl.id ? 'selected' : ''}`;
+                card.innerHTML = `<img src="${tpl.image}" alt="${tpl.name}"><h4>${tpl.name}</h4>`;
+                card.onclick = async () => {
+                    userData.settings.template = tpl.id;
                     await saveUserData();
+                    renderTemplates();
                     renderLivePreview();
-                    alert(`تم اختيار قالب ${templatesList.find(t => t.id === newTemplate).name}`);
-                });
+                    alert(`تم اختيار قالب ${tpl.name}`);
+                };
+                templateGrid.appendChild(card);
             });
         }
         
         function renderLivePreview() {
-            let html = `<div class="menu-header"><h2 contenteditable="true" id="restaurantName">${userData.settings?.restaurantName || 'مطعمي'}</h2>`;
-            html += `<div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap;">
-                        <input type="text" id="telegramBotInput" placeholder="Bot Token" value="${userData.settings.telegramBot || ''}" style="flex:1;padding:6px;border-radius:28px;border:1px solid #ddd;">
-                        <input type="text" id="telegramChatInput" placeholder="Chat ID" value="${userData.settings.telegramChat || ''}" style="flex:1;padding:6px;border-radius:28px;border:1px solid #ddd;">
-                        <button id="saveTelegramBtn" style="background:#2A6DFF;color:white;border:none;border-radius:28px;padding:0 1rem;">حفظ</button>
-                    </div></div>`;
-            html += `<div class="menu-sections">`;
+            let html = `<div class="menu-header">
+                            <input type="text" id="restaurantName" value="${userData.settings?.restaurantName || ''}" placeholder="اسم المطعم">
+                            <div class="telegram-row">
+                                <input type="text" id="telegramBot" placeholder="Bot Token" value="${userData.settings?.telegramBot || ''}">
+                                <input type="text" id="telegramChat" placeholder="Chat ID" value="${userData.settings?.telegramChat || ''}">
+                                <button id="saveTelegramBtn" class="btn-primary" style="padding:0.3rem 1rem;">حفظ</button>
+                            </div>
+                        </div>`;
             for (let section of userData.sections) {
                 html += `<div class="section-card" data-section="${section}">
-                            <h3 contenteditable="true" class="section-title">${section}</h3>
-                            <div class="items-grid" data-section="${section}">`;
-                const sectionItems = userData.items.filter(item => item.section === section);
+                            <div style="display:flex; justify-content:space-between;">
+                                <h3 class="section-title" contenteditable="true">${section}</h3>
+                                <button class="btn-icon btn-danger delete-section" data-section="${section}">حذف القسم</button>
+                            </div>
+                            <div class="items-grid">`;
+                const sectionItems = userData.items.filter(i => i.section === section);
                 for (let item of sectionItems) {
-                    html += `<div class="menu-item" data-item-id="${item.id}">
-                                <div class="item-image">
-                                    <img src="${item.imageUrl || 'https://placehold.co/100x100'}" style="width:80px;height:80px;object-fit:cover;border-radius:16px;">
-                                    <button class="change-image-btn" data-id="${item.id}">🖼️ تغيير</button>
-                                </div>
-                                <div class="item-details">
+                    html += `<div class="menu-item" data-id="${item.id}">
+                                <img class="item-img" src="${item.imageUrl || 'https://placehold.co/80x80'}" onerror="this.src='https://placehold.co/80x80'">
+                                <div class="item-info">
                                     <div class="item-name" contenteditable="true">${item.nameAr}</div>
                                     <div class="item-price" contenteditable="true">${item.price} ج.م</div>
                                     <div class="item-desc" contenteditable="true">${item.descAr || ''}</div>
+                                    <div style="margin-top:6px;">
+                                        <button class="btn-icon change-image" data-id="${item.id}">🖼️ تغيير الصورة</button>
+                                        <button class="btn-icon btn-danger delete-item" data-id="${item.id}">🗑️ حذف</button>
+                                    </div>
                                 </div>
-                                <button class="delete-item-btn" data-id="${item.id}">🗑️ حذف</button>
                             </div>`;
                 }
-                html += `</div><button class="add-item-btn" data-section="${section}">+ إضافة صنف</button></div>`;
+                html += `</div><button class="add-item" data-section="${section}">+ إضافة صنف لهذا القسم</button></div>`;
             }
-            html += `</div><button id="addSectionBtn">+ إضافة قسم جديد</button>`;
-            livePreview.innerHTML = html;
+            html += `<button id="addSectionBtn" class="btn-primary" style="margin-top:1rem;">+ إضافة قسم جديد</button>`;
+            livePreviewDiv.innerHTML = html;
             
-            const saveTelegram = document.getElementById('saveTelegramBtn');
-            if (saveTelegram) saveTelegram.onclick = async () => {
-                userData.settings.telegramBot = document.getElementById('telegramBotInput').value;
-                userData.settings.telegramChat = document.getElementById('telegramChatInput').value;
+            // ربط الأحداث
+            document.getElementById('restaurantName').addEventListener('blur', async (e) => {
+                userData.settings.restaurantName = e.target.value;
+                await saveUserData();
+            });
+            document.getElementById('saveTelegramBtn').onclick = async () => {
+                userData.settings.telegramBot = document.getElementById('telegramBot').value;
+                userData.settings.telegramChat = document.getElementById('telegramChat').value;
                 await saveUserData();
                 alert('تم حفظ إعدادات التليجرام');
             };
-            attachLiveEvents();
-        }
-        
-        function attachLiveEvents() {
+            // تعديل النصوص المباشرة
             document.querySelectorAll('[contenteditable="true"]').forEach(el => {
                 el.addEventListener('blur', async (e) => {
                     const target = e.target;
                     if (target.classList.contains('section-title')) {
-                        const oldSection = target.parentElement.getAttribute('data-section');
+                        const oldSection = target.closest('.section-card').getAttribute('data-section');
                         const newName = target.innerText.trim();
                         if (newName && newName !== oldSection) {
                             const index = userData.sections.indexOf(oldSection);
                             if (index !== -1) userData.sections[index] = newName;
-                            userData.items.forEach(item => { if (item.section === oldSection) item.section = newName; });
+                            userData.items.forEach(i => { if (i.section === oldSection) i.section = newName; });
                             await saveUserData();
                             renderLivePreview();
                         }
                     } else if (target.classList.contains('item-name')) {
-                        const itemId = target.closest('.menu-item').getAttribute('data-item-id');
+                        const itemId = target.closest('.menu-item').getAttribute('data-id');
                         const item = userData.items.find(i => i.id === itemId);
                         if (item) { item.nameAr = target.innerText.trim(); await saveUserData(); }
                     } else if (target.classList.contains('item-price')) {
-                        const itemId = target.closest('.menu-item').getAttribute('data-item-id');
+                        const itemId = target.closest('.menu-item').getAttribute('data-id');
                         const item = userData.items.find(i => i.id === itemId);
-                        if (item) { 
+                        if (item) {
                             let price = parseFloat(target.innerText.replace(' ج.م', ''));
                             if (!isNaN(price)) item.price = price;
                             await saveUserData();
                         }
                     } else if (target.classList.contains('item-desc')) {
-                        const itemId = target.closest('.menu-item').getAttribute('data-item-id');
+                        const itemId = target.closest('.menu-item').getAttribute('data-id');
                         const item = userData.items.find(i => i.id === itemId);
                         if (item) { item.descAr = target.innerText.trim(); await saveUserData(); }
-                    } else if (target.id === 'restaurantName') {
-                        userData.settings.restaurantName = target.innerText.trim();
-                        await saveUserData();
                     }
                 });
             });
-            
-            document.querySelectorAll('.change-image-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const itemId = btn.getAttribute('data-id');
-                    const fileInput = document.createElement('input');
-                    fileInput.type = 'file';
-                    fileInput.accept = 'image/*';
-                    fileInput.onchange = async (event) => {
-                        const file = event.target.files[0];
-                        if (file) {
-                            const storageRef = ref(storage, `menus/${currentUser.uid}/${Date.now()}_${file.name}`);
-                            const uploadTask = uploadBytesResumable(storageRef, file);
-                            uploadTask.on('state_changed', null, null, async () => {
-                                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                                const item = userData.items.find(i => i.id === itemId);
-                                if (item) {
-                                    if (item.imageUrl) {
-                                        try { await deleteObject(ref(storage, item.imageUrl)); } catch(e) {}
-                                    }
-                                    item.imageUrl = downloadURL;
-                                    await saveUserData();
-                                    renderLivePreview();
-                                }
-                            });
-                        }
-                    };
-                    fileInput.click();
-                });
+            // حذف قسم
+            document.querySelectorAll('.delete-section').forEach(btn => {
+                btn.onclick = async () => {
+                    const section = btn.getAttribute('data-section');
+                    if (confirm(`حذف القسم "${section}" وجميع أصنافه؟`)) {
+                        userData.sections = userData.sections.filter(s => s !== section);
+                        userData.items = userData.items.filter(i => i.section !== section);
+                        await saveUserData();
+                        renderLivePreview();
+                    }
+                };
             });
-            
-            document.querySelectorAll('.delete-item-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
+            // تغيير الصورة
+            document.querySelectorAll('.change-image').forEach(btn => {
+                btn.onclick = async () => {
+                    const itemId = btn.getAttribute('data-id');
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const storageRef = ref(storage, `menu/${currentUser.uid}/${Date.now()}_${file.name}`);
+                        const uploadTask = uploadBytesResumable(storageRef, file);
+                        uploadTask.on('state_changed', null, null, async () => {
+                            const url = await getDownloadURL(uploadTask.snapshot.ref);
+                            const item = userData.items.find(i => i.id === itemId);
+                            if (item) {
+                                if (item.imageUrl) try { await deleteObject(ref(storage, item.imageUrl)); } catch(e) {}
+                                item.imageUrl = url;
+                                await saveUserData();
+                                renderLivePreview();
+                            }
+                        });
+                    };
+                    input.click();
+                };
+            });
+            // حذف صنف
+            document.querySelectorAll('.delete-item').forEach(btn => {
+                btn.onclick = async () => {
                     const itemId = btn.getAttribute('data-id');
                     if (confirm('حذف هذا الصنف؟')) {
                         userData.items = userData.items.filter(i => i.id !== itemId);
                         await saveUserData();
                         renderLivePreview();
                     }
-                });
+                };
             });
-            
-            document.querySelectorAll('.add-item-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
+            // إضافة صنف
+            document.querySelectorAll('.add-item').forEach(btn => {
+                btn.onclick = async () => {
                     const section = btn.getAttribute('data-section');
-                    const newName = prompt('اسم الصنف (عربي):');
-                    if (!newName) return;
-                    const newPrice = parseFloat(prompt('السعر (ج.م):'));
-                    if (isNaN(newPrice)) return;
+                    const name = prompt('اسم الصنف:');
+                    if (!name) return;
+                    const price = parseFloat(prompt('السعر (ج.م):'));
+                    if (isNaN(price)) return;
                     const newItem = {
                         id: Date.now().toString(),
-                        nameAr: newName, nameEn: newName, price: newPrice,
-                        section: section, descAr: '', descEn: '', imageUrl: null
+                        nameAr: name, price: price, section: section, descAr: '', imageUrl: null
                     };
                     userData.items.push(newItem);
                     await saveUserData();
                     renderLivePreview();
-                });
+                };
             });
-            
-            const addSectionBtn = document.getElementById('addSectionBtn');
-            if (addSectionBtn) {
-                addSectionBtn.addEventListener('click', async () => {
-                    const newSection = prompt('اسم القسم الجديد:');
-                    if (newSection && !userData.sections.includes(newSection)) {
-                        userData.sections.push(newSection);
-                        await saveUserData();
-                        renderLivePreview();
-                    } else if (userData.sections.includes(newSection)) alert('هذا القسم موجود بالفعل');
-                });
-            }
+            // إضافة قسم
+            const addSection = document.getElementById('addSectionBtn');
+            if (addSection) addSection.onclick = async () => {
+                const newSection = prompt('اسم القسم الجديد:');
+                if (newSection && !userData.sections.includes(newSection)) {
+                    userData.sections.push(newSection);
+                    await saveUserData();
+                    renderLivePreview();
+                } else alert('القسم موجود مسبقاً أو غير صالح');
+            };
         }
         
         function updateMenuLink() {
-            // استخدام اسم الملف المخصص من قبلك: menu1.index
             const link = `${window.location.origin}/menu1.index?uid=${currentUser.uid}`;
-            if (menuLinkSpan) menuLinkSpan.textContent = link;
+            menuLinkSpan.textContent = link;
         }
+        copyLinkBtn.onclick = () => {
+            navigator.clipboard.writeText(menuLinkSpan.textContent);
+            alert('تم نسخ رابط المنيو');
+        };
+        logoutBtn.onclick = async () => { await signOut(auth); window.location.href = 'login.html'; };
         
-        if (copyLinkBtn) {
-            copyLinkBtn.addEventListener('click', () => {
-                const link = menuLinkSpan.textContent;
-                navigator.clipboard.writeText(link);
-                alert('تم نسخ رابط المنيو');
-            });
-        }
-        
-        logoutBtn.addEventListener('click', async () => { await signOut(auth); window.location.href = 'login.html'; });
-        
-        // تبديل التبويبات
+        // التبويبات
         window.showTab = (tabId) => {
             document.querySelectorAll('.tab-pane').forEach(tab => tab.style.display = 'none');
             document.getElementById(tabId).style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (tabId === 'menu-tab') document.querySelector('[data-tab="menu"]')?.classList.add('active');
+            if (tabId === 'templates-tab') document.querySelector('[data-tab="templates"]')?.classList.add('active');
+            if (tabId === 'link-tab') document.querySelector('[data-tab="link"]')?.classList.add('active');
         };
+        window.showTab('menu-tab');
     </script>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Cairo', sans-serif; background: #f0f2f5; }
-        .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 300px; background: white; border-left: 1px solid #ddd; padding: 1.5rem; overflow-y: auto; }
-        .main-area { flex: 1; padding: 1.5rem; overflow-y: auto; }
-        .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .template-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
-        .template-card img { width: 100%; height: 140px; object-fit: cover; }
-        .template-card h4 { margin: 0.5rem 0; }
-        .template-card button { background: linear-gradient(135deg, #2A6DFF, #7B3FE4); color: white; border: none; padding: 0.4rem 1rem; border-radius: 50px; margin-bottom: 0.8rem; cursor: pointer; }
-        .live-preview { background: white; border-radius: 28px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .menu-header { text-align: center; margin-bottom: 1.5rem; }
-        .menu-sections { display: flex; flex-direction: column; gap: 2rem; }
-        .section-card { border-bottom: 1px solid #eee; padding-bottom: 1rem; }
-        .section-title { font-size: 1.5rem; margin-bottom: 0.5rem; color: #0A1128; }
-        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 1rem; }
-        .menu-item { display: flex; gap: 1rem; background: #f8fafc; border-radius: 20px; padding: 0.8rem; align-items: center; }
-        .item-image { position: relative; }
-        .item-image img { width: 80px; height: 80px; object-fit: cover; border-radius: 16px; }
-        .change-image-btn { position: absolute; bottom: -10px; left: 0; background: #0A1128; color: white; border: none; border-radius: 20px; font-size: 10px; padding: 2px 6px; cursor: pointer; }
-        .item-details { flex: 1; }
-        .item-name { font-weight: bold; font-size: 1.1rem; }
-        .item-price { color: #2A6DFF; font-weight: bold; }
-        .item-desc { color: #666; font-size: 0.8rem; }
-        .delete-item-btn { background: #ff4d4d; color: white; border: none; border-radius: 50px; padding: 0.3rem 0.8rem; cursor: pointer; }
-        .add-item-btn, #addSectionBtn { background: #2A6DFF; color: white; border: none; border-radius: 50px; padding: 0.4rem 1rem; margin-top: 0.5rem; cursor: pointer; }
-        #addSectionBtn { display: block; margin: 1rem auto; }
-        [contenteditable="true"] { outline: none; border-bottom: 1px dashed #2A6DFF; cursor: text; }
-        .sidebar nav ul { list-style: none; margin-top: 1rem; }
-        .sidebar nav li { padding: 0.5rem; margin: 0.5rem 0; cursor: pointer; border-radius: 28px; transition: background 0.2s; font-weight: 600; }
-        .sidebar nav li:hover { background: #f0f2f5; }
-        .tab-pane { display: none; }
-        @media (max-width: 768px) { .dashboard-container { flex-direction: column; } .sidebar { width: 100%; } }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="authGuard" style="text-align:center;padding:3rem;">جاري التحقق...</div>
+    <div id="authGuard" style="text-align:center;padding:3rem;">جاري التحقق من الجلسة...</div>
     <div id="dashboardContent" style="display:none;" class="dashboard-container">
         <aside class="sidebar">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" style="height:44px;">
-                <button id="logoutBtn" style="background:#eee;border:none;padding:0.3rem 0.8rem;border-radius:50px;">تسجيل خروج</button>
+            <div class="logo-area">
+                <img class="logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa">
+                <button id="logoutBtn" class="logout-btn">تسجيل خروج</button>
             </div>
-            <nav>
-                <ul>
-                    <li onclick="showTab('tab-menu')">📋 إدارة المنيو</li>
-                    <li onclick="showTab('tab-templates')">🎨 القوالب والتخصيص</li>
-                    <li onclick="showTab('tab-link')">🔗 رابط المنيو الخاص</li>
-                </ul>
-            </nav>
-            <hr>
-            <p style="font-size:0.8rem; color:#666; margin-top:1rem;">اختر قالبك من أعلى، ثم عدّل البيانات مباشرة.</p>
+            <div class="sidebar-nav">
+                <div class="nav-item" data-tab="menu" onclick="showTab('menu-tab')">📋 إدارة المنيو</div>
+                <div class="nav-item" data-tab="templates" onclick="showTab('templates-tab')">🎨 القوالب والتخصيص</div>
+                <div class="nav-item" data-tab="link" onclick="showTab('link-tab')">🔗 رابط المنيو الخاص</div>
+            </div>
+            <p style="font-size:0.8rem; color:#64748b; margin-top:2rem;">اختر قالبك من الأسفل، ثم عدّل البيانات مباشرة</p>
         </aside>
         <main class="main-area">
-            <h2>مرحباً, <span id="userName"></span> 👋</h2>
-            <div id="tab-menu" class="tab-pane" style="display:block;">
-                <div id="livePreview" class="live-preview"></div>
+            <h2 style="margin-bottom:1rem;">مرحباً, <span id="userName"></span> 👋</h2>
+            <div id="menu-tab" class="tab-pane">
+                <div id="livePreview" class="preview-card"></div>
             </div>
-            <div id="tab-templates" class="tab-pane">
-                <div id="templateGrid" class="template-grid"></div>
+            <div id="templates-tab" class="tab-pane" style="display:none;">
+                <div class="preview-card">
+                    <h3>🎨 اختر قالبك المفضل</h3>
+                    <div id="templatesGrid" class="template-grid"></div>
+                </div>
             </div>
-            <div id="tab-link" class="tab-pane">
-                <div style="background:white; border-radius:28px; padding:1.5rem; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+            <div id="link-tab" class="tab-pane" style="display:none;">
+                <div class="preview-card">
                     <h3>🔗 رابط منيو مطعمك</h3>
-                    <p>هذا الرابط يمكنك وضعه على موقعك، وسائل التواصل، أو كود QR:</p>
-                    <div style="background:#f0f2f5; padding:0.8rem; border-radius:28px; word-break:break-all;"><span id="menuLinkSpan"></span></div>
-                    <button id="copyLinkBtn" style="margin-top:1rem;background:#2A6DFF;color:white;border:none;border-radius:28px;padding:0.5rem 1rem;">نسخ الرابط</button>
-                    <p class="note" style="margin-top:1rem;">✨ عند تغيير أي بيانات أو قالب، سيتم تحديث الرابط تلقائياً.</p>
+                    <p>انسخ هذا الرابط وضعه على موقعك أو وسائل التواصل:</p>
+                    <div style="background:#f1f5f9; padding:0.8rem; border-radius:28px; word-break:break-all; margin:1rem 0;"><span id="menuLinkSpan"></span></div>
+                    <button id="copyLinkBtn" class="btn-primary">نسخ الرابط</button>
+                    <p style="margin-top:1rem; font-size:0.8rem;">✨ أي تعديل تظهر فوراً على الرابط بدون حاجة لتغيير شيء.</p>
                 </div>
             </div>
         </main>
