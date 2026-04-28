@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>من نحن | Ordexa منصة - حلول رقمية متكاملة</title>
+    <meta name="description" content="تعرف على منصة Ordexa وفريقها بقيادة المهندس ربيع الباز، نقدم حلولاً رقمية متكاملة للمطاعم والمتاجر والشركات.">
+    <style>
+        /* نفس الـ CSS من index.html (تم حذف الأجزاء غير الضرورية للصفحة مثل hero, floating-shape, stats-section إذا لم تكن موجودة، ولكن للاختصار سأضع CSS كاملاً مع الاختلافات الطفيفة) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --deep-navy: #0A1128; --dark-slate: #121E3A; --pure-white: #FFFFFF; --off-white: #F8FAFE; --cool-gray: #EFF3F8; --slate-gray: #5A6E8A; --neon-blue: #2A6DFF; --vibrant-purple: #7B3FE4; --gradient-primary: linear-gradient(135deg, var(--neon-blue), var(--vibrant-purple)); --gradient-logo: linear-gradient(135deg, #2A6DFF, #9B4DFF); --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.05); --shadow-md: 0 20px 35px -10px rgba(0, 0, 0, 0.1); --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        body { font-family: 'Cairo', 'Tajawal', system-ui, sans-serif; background-color: var(--pure-white); color: var(--deep-navy); line-height: 1.5; overflow-x: hidden; }
+        body.en { direction: ltr; font-family: 'Inter', system-ui, sans-serif; text-align: left; }
+        h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem 1.6rem; border-radius: 50px; font-weight: 600; transition: var(--transition-smooth); cursor: pointer; border: none; font-size: 0.95rem; text-decoration: none; }
+        .btn-primary { background: var(--gradient-primary); color: white; box-shadow: 0 8px 18px rgba(42, 109, 255, 0.25); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(42, 109, 255, 0.35); }
+        header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); box-shadow: var(--shadow-sm); padding: 0.8rem 0; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
+        .logo-area { display: flex; align-items: center; gap: 1rem; }
+        .header-logo-img { height: 44px; width: auto; max-height: 50px; object-fit: contain; }
+        .lang-header-btn { background: var(--cool-gray); border: none; padding: 0.45rem 1rem; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; font-weight: 500; color: var(--deep-navy); transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--neon-blue); }
+        .mobile-menu-toggle { display: none; font-size: 1.6rem; background: none; border: none; cursor: pointer; }
+        @media (max-width: 900px) { .nav-links { display: none; width: 100%; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem 0; } .nav-links.show { display: flex; } .mobile-menu-toggle { display: block; } .logo-area { flex: 1; } .header-logo-img { height: 38px; } }
+        .page-hero { background: linear-gradient(135deg, rgba(42,109,255,0.08), transparent); padding: 3rem 0; text-align: center; margin-bottom: 2rem; }
+        .page-hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .about-content { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0 4rem; }
+        .about-text { flex: 2; }
+        .about-text h2 { font-size: 1.8rem; margin: 1.5rem 0 0.5rem; }
+        .about-text p { color: var(--slate-gray); margin-bottom: 1rem; }
+        .stats-mini { display: flex; gap: 2rem; margin: 2rem 0; flex-wrap: wrap; }
+        .stat-mini { background: var(--off-white); padding: 1rem 1.5rem; border-radius: 28px; text-align: center; flex: 1; }
+        .stat-mini h3 { font-size: 1.8rem; background: var(--gradient-primary); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        .developer-card { background: linear-gradient(135deg, #0A1128, #1a2a4f); color: white; border-radius: 28px; padding: 2rem; margin: 2rem 0; text-align: center; }
+        footer { background: var(--dark-slate); color: #cfdfed; padding: 2.5rem 0 1.5rem; margin-top: 3rem; }
+        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem; }
+        .footer-logo-img { height: 42px; width: auto; filter: brightness(0) invert(1); }
+        .footer-links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+        .footer-links a { color: #cfdfed; text-decoration: none; font-size: 0.9rem; }
+        .social-icons { display: flex; gap: 1rem; align-items: center; }
+        .phone-number { background: rgba(255,255,255,0.1); padding: 0.35rem 0.8rem; border-radius: 40px; }
+        .copyright { text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; }
+        @media (max-width: 768px) { .container { padding: 0 1.2rem; } .about-content { flex-direction: column; } .page-hero h1 { font-size: 1.8rem; } }
+        .fade-up { opacity: 0; transform: translateY(35px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header id="main-header">
+        <div class="container navbar">
+            <div class="logo-area">
+                <img class="header-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa Logo">
+                <button class="lang-header-btn" id="langToggleHeader">English</button>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" data-i18n="nav_home">الرئيسية</a>
+                <a href="about.html" class="active" data-i18n="nav_about">من نحن</a>
+                <a href="login.html" data-i18n="nav_login">تسجيل الدخول</a>
+                <a href="contact.html" data-i18n="nav_contact">اتصل بنا</a>
+                <a href="index.html#demo" class="btn btn-primary" data-i18n="nav_cta">اطلب ديمو مجاني</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-hero">
+            <div class="container">
+                <h1 data-i18n="about_title">منصة Ordexa: رؤيتنا ورسالتنا</h1>
+                <p data-i18n="about_subtitle">نحن نصنع الفارق في عالم الحلول الرقمية</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 data-i18n="who_we_are">من نحن؟</h2>
+                    <p data-i18n="who_we_are_p1">منصة Ordexa هي شركة رائدة في مجال تقديم الحلول الرقمية المتكاملة للشركات والمطاعم والمتاجر الإلكترونية. نعمل على تمكين أصحاب الأعمال من التحول الرقمي بسلاسة واحترافية، بدءاً من المنيو الإلكتروني للمطاعم وحتى المتاجر المتطورة ومنصات التوظيف.</p>
+                    <p data-i18n="who_we_are_p2">تأسست المنصة بهدف سد الفجوة بين الأفكار الرقمية والتنفيذ العملي، حيث يمتلك فريقنا خبرات عميقة في تطوير الويب وتجربة المستخدم والتسويق الإلكتروني.</p>
+                    
+                    <h2 data-i18n="vision_title">رؤيتنا</h2>
+                    <p data-i18n="vision_text">أن نكون الشريك الرقمي الأول للشركات الناشئة والصغيرة في العالم العربي، من خلال تقديم حلول تقنية مبتكرة وبأسعار تنافسية تسهل على عملائنا تحقيق أقصى استفادة من التقنيات الحديثة.</p>
+                    
+                    <h2 data-i18n="mission_title">رسالتنا</h2>
+                    <p data-i18n="mission_text">تقديم خدمات احترافية في إنشاء المواقع والتطبيقات، مع التركيز على تبسيط العملية الرقمية وضمان وصول طلبات العملاء بسلاسة عبر قنوات متعددة مثل واتساب وتليجرام، وزيادة المبيعات عبر تجربة مستخدم فريدة.</p>
+                </div>
+                <div class="stats-mini">
+                    <div class="stat-mini"><h3>+1,200</h3><p data-i18n="stat_clients">عميل حول العالم</p></div>
+                    <div class="stat-mini"><h3>+500K</h3><p data-i18n="stat_projects">طلب عبر منصاتنا</p></div>
+                    <div class="stat-mini"><h3>+7</h3><p data-i18n="stat_years">سنوات من الخبرة</p></div>
+                </div>
+            </div>
+
+            <div class="developer-card">
+                <h3 data-i18n="founder_title">المهندس <span>ربيع الباز</span></h3>
+                <p data-i18n="founder_desc">مؤسس ورئيس قسم التطوير والتصميم في منصة Ordexa. خبير معتمد في تطوير الويب وتجربة المستخدم، قام بقيادة أكثر من 500 مشروع رقمي ناجح. شغوف بتحويل الأفكار إلى منصات رقمية متكاملة تحقق قيمة حقيقية للشركات.</p>
+                <p style="margin-top: 0.8rem;">📞 01120687989  |  🌐 Ordexa Platform</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <img class="footer-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" alt="Ordexa">
+            </div>
+            <div class="footer-links">
+                <a href="index.html" data-i18n="nav_home">الرئيسية</a>
+                <a href="about.html" data-i18n="nav_about">من نحن</a>
+                <a href="login.html" data-i18n="nav_login">تسجيل الدخول</a>
+                <a href="contact.html" data-i18n="nav_contact">اتصل بنا</a>
+            </div>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/ordexaplatform" target="_blank">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/></svg>
+                </a>
+                <a href="tel:01120687989" class="phone-number">📞 01120687989</a>
+            </div>
+        </div>
+        <div class="container copyright">
+            <p data-i18n="copyright">© 2026 Ordexa Platform – جميع الحقوق محفوظة. تصميم وتطوير المهندس ربيع الباز.</p>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            ar: {
+                nav_home: "الرئيسية", nav_about: "من نحن", nav_login: "تسجيل الدخول", nav_contact: "اتصل بنا", nav_cta: "اطلب ديمو مجاني",
+                about_title: "منصة Ordexa: رؤيتنا ورسالتنا", about_subtitle: "نحن نصنع الفارق في عالم الحلول الرقمية",
+                who_we_are: "من نحن؟", who_we_are_p1: "منصة Ordexa هي شركة رائدة في مجال تقديم الحلول الرقمية المتكاملة للشركات والمطاعم والمتاجر الإلكترونية. نعمل على تمكين أصحاب الأعمال من التحول الرقمي بسلاسة واحترافية، بدءاً من المنيو الإلكتروني للمطاعم وحتى المتاجر المتطورة ومنصات التوظيف.",
+                who_we_are_p2: "تأسست المنصة بهدف سد الفجوة بين الأفكار الرقمية والتنفيذ العملي، حيث يمتلك فريقنا خبرات عميقة في تطوير الويب وتجربة المستخدم والتسويق الإلكتروني.",
+                vision_title: "رؤيتنا", vision_text: "أن نكون الشريك الرقمي الأول للشركات الناشئة والصغيرة في العالم العربي، من خلال تقديم حلول تقنية مبتكرة وبأسعار تنافسية تسهل على عملائنا تحقيق أقصى استفادة من التقنيات الحديثة.",
+                mission_title: "رسالتنا", mission_text: "تقديم خدمات احترافية في إنشاء المواقع والتطبيقات، مع التركيز على تبسيط العملية الرقمية وضمان وصول طلبات العملاء بسلاسة عبر قنوات متعددة مثل واتساب وتليجرام، وزيادة المبيعات عبر تجربة مستخدم فريدة.",
+                stat_clients: "عميل حول العالم", stat_projects: "طلب عبر منصاتنا", stat_years: "سنوات من الخبرة",
+                founder_title: "المهندس <span>ربيع الباز</span>", founder_desc: "مؤسس ورئيس قسم التطوير والتصميم في منصة Ordexa. خبير معتمد في تطوير الويب وتجربة المستخدم، قام بقيادة أكثر من 500 مشروع رقمي ناجح. شغوف بتحويل الأفكار إلى منصات رقمية متكاملة تحقق قيمة حقيقية للشركات.",
+                copyright: "© 2026 Ordexa Platform – جميع الحقوق محفوظة. تصميم وتطوير المهندس ربيع الباز."
+            },
+            en: {
+                nav_home: "Home", nav_about: "About", nav_login: "Login", nav_contact: "Contact", nav_cta: "Get Free Demo",
+                about_title: "Ordexa Platform: Our Vision & Mission", about_subtitle: "We make the difference in digital solutions",
+                who_we_are: "Who we are?", who_we_are_p1: "Ordexa Platform is a leading provider of integrated digital solutions for businesses, restaurants, and e‑commerce stores. We empower entrepreneurs to smoothly transition to digital, from restaurant digital menus to advanced stores and recruitment platforms.",
+                who_we_are_p2: "The platform was founded to bridge the gap between digital ideas and practical implementation. Our team has deep expertise in web development, user experience, and online marketing.",
+                vision_title: "Our Vision", vision_text: "To be the number one digital partner for startups and small businesses in the Arab world, offering innovative tech solutions at competitive prices that help our clients maximize modern technologies.",
+                mission_title: "Our Mission", mission_text: "To deliver professional website and app development services with a focus on simplifying the digital journey and ensuring customer orders reach you seamlessly via multiple channels like WhatsApp and Telegram, boosting sales through a unique user experience.",
+                stat_clients: "Clients Worldwide", stat_projects: "Requests via our platforms", stat_years: "Years of Experience",
+                founder_title: "Eng. <span>Rabie Elbaz</span>", founder_desc: "Founder and head of development & design at Ordexa Platform. Certified expert in web development and UX, led over 500 successful digital projects. Passionate about turning ideas into integrated digital platforms that create real value for businesses.",
+                copyright: "© 2026 Ordexa Platform – All rights reserved. Designed & developed by Eng. Rabie Elbaz."
+            }
+        };
+        let currentLang = 'ar';
+        function updateLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if (key === 'founder_title') el.innerHTML = translations[lang][key];
+                    else el.innerText = translations[lang][key];
+                }
+            });
+            document.body.classList.toggle('en', lang === 'en');
+            document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            document.getElementById('langToggleHeader').innerText = lang === 'ar' ? 'English' : 'العربية';
+            currentLang = lang;
+        }
+        document.getElementById('langToggleHeader').addEventListener('click', () => updateLanguage(currentLang === 'ar' ? 'en' : 'ar'));
+        document.getElementById('mobileMenuToggle').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('show'));
+        // Fade-up observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.about-text, .stat-mini, .developer-card, .page-hero').forEach(el => { el.classList.add('fade-up'); observer.observe(el); });
+        updateLanguage('ar');
+    </script>
+</body>
+</html>
