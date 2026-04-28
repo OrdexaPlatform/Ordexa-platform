@@ -2,220 +2,368 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>لوحة تحكم Ordexa - منصة المنيو الذكية</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoNUIF2bdo3Io7Ma3-mlFLhzRsM-kBoFM",
+            authDomain: "ordexa-platforma.firebaseapp.com",
+            projectId: "ordexa-platforma",
+            storageBucket: "ordexa-platforma.firebasestorage.app",
+            messagingSenderId: "443941203542",
+            appId: "1:443941203542:web:1db99037cfec361b2155f7",
+            measurementId: "G-CEGYC1BQPV"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        
+        // عناصر DOM
+        const authGuard = document.getElementById('authGuard');
+        const dashboardContent = document.getElementById('dashboardContent');
+        const userNameSpan = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const templateGrid = document.getElementById('templateGrid');
+        const livePreview = document.getElementById('livePreview');
+        const menuLinkSpan = document.getElementById('menuLinkSpan');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        
+        let currentUser = null;
+        let currentTemplate = 't1';
+        let userData = { sections: [], items: [], settings: { template: 't1', restaurantName: 'مطعمي', telegramBot: '', telegramChat: '' } };
+        
+        // ========== 1. التحقق من تسجيل الدخول ==========
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            currentUser = user;
+            authGuard.style.display = 'none';
+            dashboardContent.style.display = 'flex';
+            userNameSpan.textContent = user.displayName || user.email || 'عميل Ordexa';
+            
+            await loadUserData();
+            renderTemplates();
+            renderLivePreview();
+            updateMenuLink();
+        });
+        
+        async function loadUserData() {
+            const userRef = doc(db, 'users', currentUser.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                userData = userSnap.data();
+                if (!userData.settings) userData.settings = {};
+                if (!userData.settings.telegramBot) userData.settings.telegramBot = '';
+                if (!userData.settings.telegramChat) userData.settings.telegramChat = '';
+            } else {
+                userData = {
+                    sections: ['مقبلات', 'أطباق رئيسية', 'مشروبات', 'حلويات'],
+                    items: [
+                        { id: '1', nameAr: 'شاورما دجاج', nameEn: 'Chicken Shawarma', price: 60, section: 'أطباق رئيسية', descAr: 'شاورما لذيذة', imageUrl: null },
+                        { id: '2', nameAr: 'سلطة خضراء', nameEn: 'Green Salad', price: 35, section: 'مقبلات', descAr: 'سلطة طازجة', imageUrl: null },
+                        { id: '3', nameAr: 'عصير برتقال', nameEn: 'Orange Juice', price: 25, section: 'مشروبات', descAr: 'طبيعي 100%', imageUrl: null },
+                        { id: '4', nameAr: 'كنافة', nameEn: 'Kunafa', price: 45, section: 'حلويات', descAr: 'كنافة ناعمة', imageUrl: null }
+                    ],
+                    settings: { template: 't1', restaurantName: 'مطعم النخبة', telegramBot: '', telegramChat: '' }
+                };
+                await setDoc(userRef, userData);
+            }
+            currentTemplate = userData.settings?.template || 't1';
+        }
+        
+        async function saveUserData() {
+            const userRef = doc(db, 'users', currentUser.uid);
+            await setDoc(userRef, userData, { merge: true });
+        }
+        
+        const templatesList = [
+            { id: 't1', name: 'كلاسيكي أنيق', image: 'https://placehold.co/400x300/0A1128/white?text=Classic' },
+            { id: 't2', name: 'عصري مشرق', image: 'https://placehold.co/400x300/2A6DFF/white?text=Modern' },
+            { id: 't3', name: 'ليلي فاخر', image: 'https://placehold.co/400x300/1a1a2e/white?text=Night' },
+            { id: 't4', name: 'تبويبات ذكية', image: 'https://placehold.co/400x300/7B3FE4/white?text=Tabs' },
+            { id: 't5', name: 'بسيط وسريع', image: 'https://placehold.co/400x300/5A6E8A/white?text=Simple' },
+            { id: 'bono', name: 'بافلو بونو (احترافي)', image: 'https://placehold.co/400x300/F9B23F/0A0A0A?text=Bono' }
+        ];
+        
+        function renderTemplates() {
+            templateGrid.innerHTML = '';
+            templatesList.forEach(tpl => {
+                const card = document.createElement('div');
+                card.className = 'template-card';
+                card.innerHTML = `
+                    <img src="${tpl.image}" alt="${tpl.name}">
+                    <h4>${tpl.name}</h4>
+                    <button class="select-template-btn" data-id="${tpl.id}">اختر هذا القالب</button>
+                `;
+                templateGrid.appendChild(card);
+            });
+            document.querySelectorAll('.select-template-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const newTemplate = btn.getAttribute('data-id');
+                    currentTemplate = newTemplate;
+                    userData.settings = { ...userData.settings, template: newTemplate };
+                    await saveUserData();
+                    renderLivePreview();
+                    alert(`تم اختيار قالب ${templatesList.find(t => t.id === newTemplate).name}`);
+                });
+            });
+        }
+        
+        function renderLivePreview() {
+            let html = `<div class="menu-header"><h2 contenteditable="true" id="restaurantName">${userData.settings?.restaurantName || 'مطعمي'}</h2>`;
+            html += `<div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap;">
+                        <input type="text" id="telegramBotInput" placeholder="Bot Token" value="${userData.settings.telegramBot || ''}" style="flex:1;padding:6px;border-radius:28px;border:1px solid #ddd;">
+                        <input type="text" id="telegramChatInput" placeholder="Chat ID" value="${userData.settings.telegramChat || ''}" style="flex:1;padding:6px;border-radius:28px;border:1px solid #ddd;">
+                        <button id="saveTelegramBtn" style="background:#2A6DFF;color:white;border:none;border-radius:28px;padding:0 1rem;">حفظ</button>
+                    </div></div>`;
+            html += `<div class="menu-sections">`;
+            for (let section of userData.sections) {
+                html += `<div class="section-card" data-section="${section}">
+                            <h3 contenteditable="true" class="section-title">${section}</h3>
+                            <div class="items-grid" data-section="${section}">`;
+                const sectionItems = userData.items.filter(item => item.section === section);
+                for (let item of sectionItems) {
+                    html += `<div class="menu-item" data-item-id="${item.id}">
+                                <div class="item-image">
+                                    <img src="${item.imageUrl || 'https://placehold.co/100x100'}" style="width:80px;height:80px;object-fit:cover;border-radius:16px;">
+                                    <button class="change-image-btn" data-id="${item.id}">🖼️ تغيير</button>
+                                </div>
+                                <div class="item-details">
+                                    <div class="item-name" contenteditable="true">${item.nameAr}</div>
+                                    <div class="item-price" contenteditable="true">${item.price} ج.م</div>
+                                    <div class="item-desc" contenteditable="true">${item.descAr || ''}</div>
+                                </div>
+                                <button class="delete-item-btn" data-id="${item.id}">🗑️ حذف</button>
+                            </div>`;
+                }
+                html += `</div><button class="add-item-btn" data-section="${section}">+ إضافة صنف</button></div>`;
+            }
+            html += `</div><button id="addSectionBtn">+ إضافة قسم جديد</button>`;
+            livePreview.innerHTML = html;
+            
+            const saveTelegram = document.getElementById('saveTelegramBtn');
+            if (saveTelegram) saveTelegram.onclick = async () => {
+                userData.settings.telegramBot = document.getElementById('telegramBotInput').value;
+                userData.settings.telegramChat = document.getElementById('telegramChatInput').value;
+                await saveUserData();
+                alert('تم حفظ إعدادات التليجرام');
+            };
+            attachLiveEvents();
+        }
+        
+        function attachLiveEvents() {
+            document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                el.addEventListener('blur', async (e) => {
+                    const target = e.target;
+                    if (target.classList.contains('section-title')) {
+                        const oldSection = target.parentElement.getAttribute('data-section');
+                        const newName = target.innerText.trim();
+                        if (newName && newName !== oldSection) {
+                            const index = userData.sections.indexOf(oldSection);
+                            if (index !== -1) userData.sections[index] = newName;
+                            userData.items.forEach(item => { if (item.section === oldSection) item.section = newName; });
+                            await saveUserData();
+                            renderLivePreview();
+                        }
+                    } else if (target.classList.contains('item-name')) {
+                        const itemId = target.closest('.menu-item').getAttribute('data-item-id');
+                        const item = userData.items.find(i => i.id === itemId);
+                        if (item) { item.nameAr = target.innerText.trim(); await saveUserData(); }
+                    } else if (target.classList.contains('item-price')) {
+                        const itemId = target.closest('.menu-item').getAttribute('data-item-id');
+                        const item = userData.items.find(i => i.id === itemId);
+                        if (item) { 
+                            let price = parseFloat(target.innerText.replace(' ج.م', ''));
+                            if (!isNaN(price)) item.price = price;
+                            await saveUserData();
+                        }
+                    } else if (target.classList.contains('item-desc')) {
+                        const itemId = target.closest('.menu-item').getAttribute('data-item-id');
+                        const item = userData.items.find(i => i.id === itemId);
+                        if (item) { item.descAr = target.innerText.trim(); await saveUserData(); }
+                    } else if (target.id === 'restaurantName') {
+                        userData.settings.restaurantName = target.innerText.trim();
+                        await saveUserData();
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.change-image-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const itemId = btn.getAttribute('data-id');
+                    const fileInput = document.createElement('input');
+                    fileInput.type = 'file';
+                    fileInput.accept = 'image/*';
+                    fileInput.onchange = async (event) => {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const storageRef = ref(storage, `menus/${currentUser.uid}/${Date.now()}_${file.name}`);
+                            const uploadTask = uploadBytesResumable(storageRef, file);
+                            uploadTask.on('state_changed', null, null, async () => {
+                                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                                const item = userData.items.find(i => i.id === itemId);
+                                if (item) {
+                                    if (item.imageUrl) {
+                                        try { await deleteObject(ref(storage, item.imageUrl)); } catch(e) {}
+                                    }
+                                    item.imageUrl = downloadURL;
+                                    await saveUserData();
+                                    renderLivePreview();
+                                }
+                            });
+                        }
+                    };
+                    fileInput.click();
+                });
+            });
+            
+            document.querySelectorAll('.delete-item-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const itemId = btn.getAttribute('data-id');
+                    if (confirm('حذف هذا الصنف؟')) {
+                        userData.items = userData.items.filter(i => i.id !== itemId);
+                        await saveUserData();
+                        renderLivePreview();
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.add-item-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const section = btn.getAttribute('data-section');
+                    const newName = prompt('اسم الصنف (عربي):');
+                    if (!newName) return;
+                    const newPrice = parseFloat(prompt('السعر (ج.م):'));
+                    if (isNaN(newPrice)) return;
+                    const newItem = {
+                        id: Date.now().toString(),
+                        nameAr: newName, nameEn: newName, price: newPrice,
+                        section: section, descAr: '', descEn: '', imageUrl: null
+                    };
+                    userData.items.push(newItem);
+                    await saveUserData();
+                    renderLivePreview();
+                });
+            });
+            
+            const addSectionBtn = document.getElementById('addSectionBtn');
+            if (addSectionBtn) {
+                addSectionBtn.addEventListener('click', async () => {
+                    const newSection = prompt('اسم القسم الجديد:');
+                    if (newSection && !userData.sections.includes(newSection)) {
+                        userData.sections.push(newSection);
+                        await saveUserData();
+                        renderLivePreview();
+                    } else if (userData.sections.includes(newSection)) alert('هذا القسم موجود بالفعل');
+                });
+            }
+        }
+        
+        function updateMenuLink() {
+            // استخدام اسم الملف المخصص من قبلك: menu1.index
+            const link = `${window.location.origin}/menu1.index?uid=${currentUser.uid}`;
+            if (menuLinkSpan) menuLinkSpan.textContent = link;
+        }
+        
+        if (copyLinkBtn) {
+            copyLinkBtn.addEventListener('click', () => {
+                const link = menuLinkSpan.textContent;
+                navigator.clipboard.writeText(link);
+                alert('تم نسخ رابط المنيو');
+            });
+        }
+        
+        logoutBtn.addEventListener('click', async () => { await signOut(auth); window.location.href = 'login.html'; });
+        
+        // تبديل التبويبات
+        window.showTab = (tabId) => {
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+        };
+    </script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Cairo', sans-serif; background: #f0f2f5; }
         .dashboard-container { display: flex; min-height: 100vh; }
         .sidebar { width: 300px; background: white; border-left: 1px solid #ddd; padding: 1.5rem; overflow-y: auto; }
-        .main-area { flex: 1; padding: 1.5rem; }
+        .main-area { flex: 1; padding: 1.5rem; overflow-y: auto; }
         .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .template-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; cursor: pointer; transition: 0.2s; }
-        .template-card:hover { transform: translateY(-3px); }
+        .template-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
         .template-card img { width: 100%; height: 140px; object-fit: cover; }
         .template-card h4 { margin: 0.5rem 0; }
-        .template-card.active { border: 2px solid #2A6DFF; }
-        .live-preview { background: white; border-radius: 28px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 1rem; }
+        .template-card button { background: linear-gradient(135deg, #2A6DFF, #7B3FE4); color: white; border: none; padding: 0.4rem 1rem; border-radius: 50px; margin-bottom: 0.8rem; cursor: pointer; }
+        .live-preview { background: white; border-radius: 28px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .menu-header { text-align: center; margin-bottom: 1.5rem; }
         .menu-sections { display: flex; flex-direction: column; gap: 2rem; }
         .section-card { border-bottom: 1px solid #eee; padding-bottom: 1rem; }
         .section-title { font-size: 1.5rem; margin-bottom: 0.5rem; color: #0A1128; }
         .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 1rem; }
         .menu-item { display: flex; gap: 1rem; background: #f8fafc; border-radius: 20px; padding: 0.8rem; align-items: center; }
-        .item-image img { width: 80px; height: 80px; object-fit: cover; border-radius: 16px; background: #eee; }
-        .change-image-btn { background: #0A1128; color: white; border: none; border-radius: 20px; font-size: 10px; padding: 2px 6px; cursor: pointer; margin-top: 5px; }
+        .item-image { position: relative; }
+        .item-image img { width: 80px; height: 80px; object-fit: cover; border-radius: 16px; }
+        .change-image-btn { position: absolute; bottom: -10px; left: 0; background: #0A1128; color: white; border: none; border-radius: 20px; font-size: 10px; padding: 2px 6px; cursor: pointer; }
         .item-details { flex: 1; }
-        .item-name, .item-price, .item-desc, .section-title, #restaurantName { cursor: text; outline: none; border-bottom: 1px dashed #2A6DFF; display: inline-block; }
-        .delete-item-btn, .add-item-btn, #addSectionBtn { background: #2A6DFF; color: white; border: none; border-radius: 50px; padding: 0.3rem 0.8rem; cursor: pointer; margin-top: 0.5rem; }
-        .delete-item-btn { background: #ff4d4d; }
-        #logoutBtn { background: #eee; border: none; padding: 0.3rem 0.8rem; border-radius: 50px; cursor: pointer; }
+        .item-name { font-weight: bold; font-size: 1.1rem; }
+        .item-price { color: #2A6DFF; font-weight: bold; }
+        .item-desc { color: #666; font-size: 0.8rem; }
+        .delete-item-btn { background: #ff4d4d; color: white; border: none; border-radius: 50px; padding: 0.3rem 0.8rem; cursor: pointer; }
+        .add-item-btn, #addSectionBtn { background: #2A6DFF; color: white; border: none; border-radius: 50px; padding: 0.4rem 1rem; margin-top: 0.5rem; cursor: pointer; }
+        #addSectionBtn { display: block; margin: 1rem auto; }
+        [contenteditable="true"] { outline: none; border-bottom: 1px dashed #2A6DFF; cursor: text; }
+        .sidebar nav ul { list-style: none; margin-top: 1rem; }
+        .sidebar nav li { padding: 0.5rem; margin: 0.5rem 0; cursor: pointer; border-radius: 28px; transition: background 0.2s; font-weight: 600; }
+        .sidebar nav li:hover { background: #f0f2f5; }
+        .tab-pane { display: none; }
         @media (max-width: 768px) { .dashboard-container { flex-direction: column; } .sidebar { width: 100%; } }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div id="dashboardContent" class="dashboard-container">
-    <aside class="sidebar">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" style="height:44px;">
-            <button id="logoutBtn">تسجيل خروج</button>
-        </div>
-        <h3 style="margin:1rem 0;">🎨 اختر قالبك</h3>
-        <div id="templateGrid" class="template-grid"></div>
-        <hr>
-        <p style="font-size:0.8rem; color:#666; margin-top:1rem;">اختر قالباً، ثم عدّل النصوص والصور مباشرة على المعاينة.</p>
-    </aside>
-    <main class="main-area">
-        <h2>مرحباً, <span id="userName">العميل</span> 👋</h2>
-        <div id="livePreview" class="live-preview"></div>
-    </main>
-</div>
-
-<script>
-    // بيانات تجريبية للمستخدم (دون Firebase حالياً)
-    let userData = {
-        restaurantName: "مطعم النخبة",
-        sections: ["مقبلات", "أطباق رئيسية", "مشروبات", "حلويات"],
-        items: [
-            { id: "1", nameAr: "شاورما دجاج", price: 60, section: "أطباق رئيسية", descAr: "شاورما لذيذة مع الثوم", imageUrl: null },
-            { id: "2", nameAr: "سلطة خضراء", price: 35, section: "مقبلات", descAr: "طازجة", imageUrl: null },
-            { id: "3", nameAr: "عصير برتقال", price: 25, section: "مشروبات", descAr: "طبيعي", imageUrl: null },
-            { id: "4", nameAr: "كنافة", price: 45, section: "حلويات", descAr: "كنافة ناعمة", imageUrl: null }
-        ],
-        currentTemplate: "t1"
-    };
-
-    const templates = {
-        t1: { name: "كلاسيكي أنيق", image: "https://placehold.co/400x300/0A1128/white?text=Classic" },
-        t2: { name: "عصري مشرق", image: "https://placehold.co/400x300/2A6DFF/white?text=Modern" },
-        t3: { name: "ليلي فاخر", image: "https://placehold.co/400x300/1a1a2e/white?text=Night" },
-        t4: { name: "تبويبات ذكية", image: "https://placehold.co/400x300/7B3FE4/white?text=Tabs" },
-        t5: { name: "بسيط وسريع", image: "https://placehold.co/400x300/5A6E8A/white?text=Simple" }
-    };
-
-    function renderTemplates() {
-        const grid = document.getElementById('templateGrid');
-        grid.innerHTML = '';
-        for (let [id, tpl] of Object.entries(templates)) {
-            const card = document.createElement('div');
-            card.className = `template-card ${userData.currentTemplate === id ? 'active' : ''}`;
-            card.innerHTML = `<img src="${tpl.image}"><h4>${tpl.name}</h4>`;
-            card.onclick = () => {
-                userData.currentTemplate = id;
-                renderTemplates();
-                renderPreview();
-            };
-            grid.appendChild(card);
-        }
-    }
-
-    function renderPreview() {
-        const container = document.getElementById('livePreview');
-        let html = `<div class="menu-header"><h2 contenteditable="true" id="restaurantName">${userData.restaurantName}</h2></div>`;
-        html += `<div class="menu-sections">`;
-        for (let section of userData.sections) {
-            html += `<div class="section-card" data-section="${section}">
-                        <h3 contenteditable="true" class="section-title">${section}</h3>
-                        <div class="items-grid">`;
-            const sectionItems = userData.items.filter(i => i.section === section);
-            for (let item of sectionItems) {
-                html += `<div class="menu-item" data-item-id="${item.id}">
-                            <div class="item-image">
-                                <img src="${item.imageUrl || 'https://placehold.co/100x100'}" style="width:80px;height:80px;object-fit:cover;border-radius:16px;">
-                                <button class="change-image-btn" data-id="${item.id}">تغيير الصورة</button>
-                            </div>
-                            <div class="item-details">
-                                <div class="item-name" contenteditable="true">${item.nameAr}</div>
-                                <div class="item-price" contenteditable="true">${item.price} ج.م</div>
-                                <div class="item-desc" contenteditable="true">${item.descAr}</div>
-                            </div>
-                            <button class="delete-item-btn" data-id="${item.id}">حذف</button>
-                        </div>`;
-            }
-            html += `</div><button class="add-item-btn" data-section="${section}">+ إضافة صنف</button></div>`;
-        }
-        html += `</div><button id="addSectionBtn">+ إضافة قسم جديد</button>`;
-        container.innerHTML = html;
-        attachEvents();
-    }
-
-    function attachEvents() {
-        // حفظ التغييرات على النصوص
-        const saveData = () => {
-            // حفظ اسم المطعم
-            const restaurantElem = document.getElementById('restaurantName');
-            if (restaurantElem) userData.restaurantName = restaurantElem.innerText;
-            // حفظ الأقسام والأصناف (سيتم تحديثها من خلال الأحداث الفردية)
-            console.log("تم حفظ البيانات محلياً", userData);
-            // يمكن لاحقاً إرسالها إلى Firebase
-        };
-
-        document.querySelectorAll('[contenteditable="true"]').forEach(el => {
-            el.addEventListener('blur', saveData);
-        });
-
-        // تغيير الصور
-        document.querySelectorAll('.change-image-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const itemId = btn.getAttribute('data-id');
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (event) => {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            const item = userData.items.find(i => i.id === itemId);
-                            if (item) {
-                                item.imageUrl = e.target.result;
-                                renderPreview();
-                            }
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                };
-                input.click();
-            });
-        });
-
-        // حذف صنف
-        document.querySelectorAll('.delete-item-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const itemId = btn.getAttribute('data-id');
-                if (confirm('حذف هذا الصنف؟')) {
-                    userData.items = userData.items.filter(i => i.id !== itemId);
-                    renderPreview();
-                }
-            });
-        });
-
-        // إضافة صنف
-        document.querySelectorAll('.add-item-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const section = btn.getAttribute('data-section');
-                const name = prompt('اسم الصنف:');
-                if (!name) return;
-                const price = parseFloat(prompt('السعر:'));
-                if (isNaN(price)) return;
-                const newItem = {
-                    id: Date.now().toString(),
-                    nameAr: name,
-                    price: price,
-                    section: section,
-                    descAr: '',
-                    imageUrl: null
-                };
-                userData.items.push(newItem);
-                renderPreview();
-            });
-        });
-
-        // إضافة قسم
-        const addSectionBtn = document.getElementById('addSectionBtn');
-        if (addSectionBtn) {
-            addSectionBtn.addEventListener('click', () => {
-                const newSection = prompt('اسم القسم الجديد:');
-                if (newSection && !userData.sections.includes(newSection)) {
-                    userData.sections.push(newSection);
-                    renderPreview();
-                } else alert('القسم موجود مسبقاً');
-            });
-        }
-    }
-
-    // تسجيل الخروج مؤقت (سيتم ربطه لاحقاً)
-    document.getElementById('logoutBtn').onclick = () => {
-        window.location.href = 'login.html';
-    };
-
-    // بدء التشغيل
-    renderTemplates();
-    renderPreview();
-
-    // محاكاة اسم المستخدم (يمكن جلبه من Firebase لاحقاً)
-    document.getElementById('userName').innerText = "محمد";
-</script>
+    <div id="authGuard" style="text-align:center;padding:3rem;">جاري التحقق...</div>
+    <div id="dashboardContent" style="display:none;" class="dashboard-container">
+        <aside class="sidebar">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg8h07xrvSaXQ40FLkiIjv0nWbLy81uybfhvz-fzqf4gRnq8whBCmPYai7CzBTCFqVSyMURBPRSZ9EcC14JgkRM1P38h76Rp7V3CEGDDeiEuJmBtKP4FKNkw7qNqA6y_9VpYI7kxyLdVuxE5flbCdL2GWND06L4eA_EqXwg4Tpx-0QU4V7S4UXYHXZCjEM/s320/ei_1777296305238-removebg-preview.png" style="height:44px;">
+                <button id="logoutBtn" style="background:#eee;border:none;padding:0.3rem 0.8rem;border-radius:50px;">تسجيل خروج</button>
+            </div>
+            <nav>
+                <ul>
+                    <li onclick="showTab('tab-menu')">📋 إدارة المنيو</li>
+                    <li onclick="showTab('tab-templates')">🎨 القوالب والتخصيص</li>
+                    <li onclick="showTab('tab-link')">🔗 رابط المنيو الخاص</li>
+                </ul>
+            </nav>
+            <hr>
+            <p style="font-size:0.8rem; color:#666; margin-top:1rem;">اختر قالبك من أعلى، ثم عدّل البيانات مباشرة.</p>
+        </aside>
+        <main class="main-area">
+            <h2>مرحباً, <span id="userName"></span> 👋</h2>
+            <div id="tab-menu" class="tab-pane" style="display:block;">
+                <div id="livePreview" class="live-preview"></div>
+            </div>
+            <div id="tab-templates" class="tab-pane">
+                <div id="templateGrid" class="template-grid"></div>
+            </div>
+            <div id="tab-link" class="tab-pane">
+                <div style="background:white; border-radius:28px; padding:1.5rem; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+                    <h3>🔗 رابط منيو مطعمك</h3>
+                    <p>هذا الرابط يمكنك وضعه على موقعك، وسائل التواصل، أو كود QR:</p>
+                    <div style="background:#f0f2f5; padding:0.8rem; border-radius:28px; word-break:break-all;"><span id="menuLinkSpan"></span></div>
+                    <button id="copyLinkBtn" style="margin-top:1rem;background:#2A6DFF;color:white;border:none;border-radius:28px;padding:0.5rem 1rem;">نسخ الرابط</button>
+                    <p class="note" style="margin-top:1rem;">✨ عند تغيير أي بيانات أو قالب، سيتم تحديث الرابط تلقائياً.</p>
+                </div>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
