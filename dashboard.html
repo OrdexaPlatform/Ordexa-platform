@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Cairo', sans-serif; background: #f5f7fc; }
         .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 320px; background: white; border-left: 1px solid #e2e8f0; padding: 1.5rem; overflow-y: auto; box-shadow: 0 0 15px rgba(0,0,0,0.02); }
+        .sidebar { width: 320px; background: white; border-left: 1px solid #e2e8f0; padding: 1.5rem; overflow-y: auto; }
         .main-area { flex: 1; padding: 1.5rem; overflow-y: auto; }
         .logo-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
         .logo-img { height: 44px; }
@@ -17,10 +17,10 @@
         .nav-item { padding: 0.7rem 1rem; margin: 0.3rem 0; border-radius: 28px; cursor: pointer; transition: 0.2s; font-weight: 600; color: #1e293b; }
         .nav-item:hover, .nav-item.active { background: #eef2ff; color: #2A6DFF; }
         .template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .template-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; transition: transform 0.2s; cursor: pointer; border: 2px solid transparent; }
+        .template-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; transition: 0.2s; cursor: pointer; border: 2px solid transparent; }
         .template-card.selected { border-color: #2A6DFF; box-shadow: 0 4px 12px rgba(42,109,255,0.2); }
         .template-card img { width: 100%; height: 100px; object-fit: cover; background: #f1f5f9; }
-        .template-card h4 { font-size: 0.85rem; margin: 0.5rem 0; color: #1e293b; }
+        .template-card h4 { font-size: 0.85rem; margin: 0.5rem 0; }
         .preview-card { background: white; border-radius: 28px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
         .menu-header input, .menu-header textarea { width: 100%; margin-bottom: 0.5rem; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 28px; }
         .telegram-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin: 1rem 0; }
@@ -40,7 +40,6 @@
         @media (max-width: 768px) { .dashboard-container { flex-direction: column; } .sidebar { width: 100%; } }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -75,7 +74,6 @@
         let currentUser = null;
         let userData = { sections: [], items: [], settings: {} };
         
-        // قوالب مع صور من مصادر مجانية (يمكنك استبدالها بأي صور)
         const templatesList = [
             { id: 'classic', name: 'كلاسيكي أنيق', image: 'https://picsum.photos/id/104/300/200' },
             { id: 'modern', name: 'عصري مشرق', image: 'https://picsum.photos/id/20/300/200' },
@@ -174,7 +172,6 @@
             html += `<button id="addSectionBtn" class="btn-primary" style="margin-top:1rem;">+ إضافة قسم جديد</button>`;
             livePreviewDiv.innerHTML = html;
             
-            // ربط الأحداث
             document.getElementById('restaurantName').addEventListener('blur', async (e) => {
                 userData.settings.restaurantName = e.target.value;
                 await saveUserData();
@@ -185,7 +182,6 @@
                 await saveUserData();
                 alert('تم حفظ إعدادات التليجرام');
             };
-            // تعديل النصوص المباشرة
             document.querySelectorAll('[contenteditable="true"]').forEach(el => {
                 el.addEventListener('blur', async (e) => {
                     const target = e.target;
@@ -218,7 +214,6 @@
                     }
                 });
             });
-            // حذف قسم
             document.querySelectorAll('.delete-section').forEach(btn => {
                 btn.onclick = async () => {
                     const section = btn.getAttribute('data-section');
@@ -230,7 +225,6 @@
                     }
                 };
             });
-            // تغيير الصورة
             document.querySelectorAll('.change-image').forEach(btn => {
                 btn.onclick = async () => {
                     const itemId = btn.getAttribute('data-id');
@@ -256,7 +250,6 @@
                     input.click();
                 };
             });
-            // حذف صنف
             document.querySelectorAll('.delete-item').forEach(btn => {
                 btn.onclick = async () => {
                     const itemId = btn.getAttribute('data-id');
@@ -267,7 +260,6 @@
                     }
                 };
             });
-            // إضافة صنف
             document.querySelectorAll('.add-item').forEach(btn => {
                 btn.onclick = async () => {
                     const section = btn.getAttribute('data-section');
@@ -284,7 +276,6 @@
                     renderLivePreview();
                 };
             });
-            // إضافة قسم
             const addSection = document.getElementById('addSectionBtn');
             if (addSection) addSection.onclick = async () => {
                 const newSection = prompt('اسم القسم الجديد:');
@@ -297,7 +288,8 @@
         }
         
         function updateMenuLink() {
-            const link = `${window.location.origin}/menu1.index?uid=${currentUser.uid}`;
+            // 👇 الرابط الآن لـ menu1.html (وليس menu1.index)
+            const link = `${window.location.origin}/menu1.html?uid=${currentUser.uid}`;
             menuLinkSpan.textContent = link;
         }
         copyLinkBtn.onclick = () => {
@@ -306,7 +298,6 @@
         };
         logoutBtn.onclick = async () => { await signOut(auth); window.location.href = 'login.html'; };
         
-        // التبويبات
         window.showTab = (tabId) => {
             document.querySelectorAll('.tab-pane').forEach(tab => tab.style.display = 'none');
             document.getElementById(tabId).style.display = 'block';
@@ -350,7 +341,7 @@
                     <p>انسخ هذا الرابط وضعه على موقعك أو وسائل التواصل:</p>
                     <div style="background:#f1f5f9; padding:0.8rem; border-radius:28px; word-break:break-all; margin:1rem 0;"><span id="menuLinkSpan"></span></div>
                     <button id="copyLinkBtn" class="btn-primary">نسخ الرابط</button>
-                    <p style="margin-top:1rem; font-size:0.8rem;">✨ أي تعديل تظهر فوراً على الرابط بدون حاجة لتغيير شيء.</p>
+                    <p style="margin-top:1rem; font-size:0.8rem;">✨ أي تعديل يظهر فوراً على الرابط بدون حاجة لتغيير شيء.</p>
                 </div>
             </div>
         </main>
