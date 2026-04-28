@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>تسجيل الدخول | Ordexa منصة</title>
-    <!-- Firebase SDK (modular v9+) -->
+    <title>تسجيل الدخول | Ordexa منصة - حلول رقمية متكاملة</title>
+    <!-- Firebase SDK (modular) -->
     <script type="module">
-        // استيراد Firebase SDK بطريقة حديثة (modular)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         
-        // إعدادات Firebase المقدمة
+        // إعدادات Firebase الخاصة بمشروعك
         const firebaseConfig = {
             apiKey: "AIzaSyDoNUIF2bdo3Io7Ma3-mlFLhzRsM-kBoFM",
             authDomain: "ordexa-platforma.firebaseapp.com",
@@ -21,46 +20,38 @@
             measurementId: "G-CEGYC1BQPV"
         };
         
-        // تهيئة Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
         
-        // جلب العناصر من DOM
+        // عناصر DOM
         const loginForm = document.getElementById('loginForm');
         const signupForm = document.getElementById('signupForm');
-        const showSignupBtn = document.getElementById('showSignup');
-        const showLoginBtn = document.getElementById('showLogin');
         const authMessage = document.getElementById('authMessage');
-        const loginCard = document.getElementById('loginCard');
-        const signupCard = document.getElementById('signupCard');
-        
-        // متغير للغة الحالية (سيتم تحديثه من updateLanguage)
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const googleSignupBtn = document.getElementById('googleSignupBtn');
         let currentLang = 'ar';
         
-        // وظيفة عرض الرسائل
+        // دالة عرض الرسائل
         function showMessage(msg, isError = true) {
             authMessage.textContent = msg;
             authMessage.style.display = 'block';
             authMessage.style.backgroundColor = isError ? '#ffe5e5' : '#e0f7e0';
             authMessage.style.color = isError ? '#c62828' : '#2e7d32';
             authMessage.style.border = `1px solid ${isError ? '#ffcdd2' : '#c8e6c9'}`;
-            setTimeout(() => {
-                authMessage.style.display = 'none';
-            }, 5000);
+            setTimeout(() => { authMessage.style.display = 'none'; }, 5000);
         }
         
-        // تسجيل الدخول
+        // تسجيل الدخول بالبريد وكلمة المرور
         if (loginForm) {
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('loginEmail').value.trim();
                 const password = document.getElementById('loginPassword').value;
-                
                 if (!email || !password) {
                     showMessage(currentLang === 'ar' ? 'الرجاء إدخال البريد الإلكتروني وكلمة المرور' : 'Please enter email and password');
                     return;
                 }
-                
                 try {
                     const userCredential = await signInWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
@@ -70,9 +61,7 @@
                         return;
                     }
                     showMessage(currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح! جاري التحويل...' : 'Login successful! Redirecting...', false);
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
+                    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
                 } catch (error) {
                     let errorMsg = '';
                     switch (error.code) {
@@ -82,7 +71,7 @@
                             errorMsg = currentLang === 'ar' ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة' : 'Invalid email or password';
                             break;
                         case 'auth/too-many-requests':
-                            errorMsg = currentLang === 'ar' ? 'تم تعطيل الحساب مؤقتاً بسبب كثرة المحاولات. حاول لاحقاً' : 'Account temporarily disabled due to many failed attempts';
+                            errorMsg = currentLang === 'ar' ? 'تم تعطيل الحساب مؤقتاً بسبب كثرة المحاولات' : 'Too many requests. Try later';
                             break;
                         default:
                             errorMsg = error.message;
@@ -92,14 +81,13 @@
             });
         }
         
-        // إنشاء حساب جديد
+        // إنشاء حساب جديد بالبريد وكلمة المرور
         if (signupForm) {
             signupForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('signupEmail').value.trim();
                 const password = document.getElementById('signupPassword').value;
                 const confirmPassword = document.getElementById('signupConfirmPassword').value;
-                
                 if (password !== confirmPassword) {
                     showMessage(currentLang === 'ar' ? 'كلمتا المرور غير متطابقتين' : 'Passwords do not match');
                     return;
@@ -108,29 +96,23 @@
                     showMessage(currentLang === 'ar' ? 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' : 'Password must be at least 6 characters');
                     return;
                 }
-                
                 try {
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    // إرسال بريد تفعيل
-                    await sendEmailVerification(user);
-                    showMessage(currentLang === 'ar' ? 'تم إنشاء الحساب بنجاح! تم إرسال رابط التفعيل إلى بريدك الإلكتروني. قم بتفعيل حسابك ثم سجل الدخول.' : 'Account created! A verification email has been sent. Please verify and then log in.', false);
+                    await sendEmailVerification(userCredential.user);
+                    showMessage(currentLang === 'ar' ? 'تم إنشاء الحساب! تم إرسال رابط التفعيل إلى بريدك. قم بتفعيله ثم سجل الدخول.' : 'Account created! A verification email has been sent. Please verify and then log in.', false);
                     signupForm.reset();
-                    // التبديل إلى نموذج تسجيل الدخول بعد 3 ثوانٍ
                     setTimeout(() => {
-                        if (showLoginBtn) showLoginBtn.click();
+                        const loginLink = document.getElementById('showLogin');
+                        if (loginLink) loginLink.click();
                     }, 3000);
                 } catch (error) {
                     let errorMsg = '';
                     switch (error.code) {
                         case 'auth/email-already-in-use':
-                            errorMsg = currentLang === 'ar' ? 'هذا البريد الإلكتروني مسجل بالفعل' : 'Email already in use';
+                            errorMsg = currentLang === 'ar' ? 'هذا البريد مسجل بالفعل' : 'Email already in use';
                             break;
                         case 'auth/invalid-email':
-                            errorMsg = currentLang === 'ar' ? 'البريد الإلكتروني غير صالح' : 'Invalid email address';
-                            break;
-                        case 'auth/weak-password':
-                            errorMsg = currentLang === 'ar' ? 'كلمة المرور ضعيفة جداً' : 'Password is too weak';
+                            errorMsg = currentLang === 'ar' ? 'البريد الإلكتروني غير صالح' : 'Invalid email';
                             break;
                         default:
                             errorMsg = error.message;
@@ -140,28 +122,36 @@
             });
         }
         
-        // التبديل بين بطاقتي تسجيل الدخول وإنشاء الحساب
-        if (showSignupBtn) {
-            showSignupBtn.addEventListener('click', () => {
-                loginCard.style.display = 'none';
-                signupCard.style.display = 'block';
-            });
-        }
-        if (showLoginBtn) {
-            showLoginBtn.addEventListener('click', () => {
-                signupCard.style.display = 'none';
-                loginCard.style.display = 'block';
-            });
+        // دالة مشتركة لتسجيل الدخول عبر Google (ستُستخدم للنموذجين)
+        async function handleGoogleSignIn() {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+                showMessage(currentLang === 'ar' ? `مرحباً ${user.displayName || user.email}! جاري التحويل...` : `Welcome ${user.displayName || user.email}! Redirecting...`, false);
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+            } catch (error) {
+                let errorMsg = '';
+                if (error.code === 'auth/popup-closed-by-user') {
+                    errorMsg = currentLang === 'ar' ? 'تم إغلاق نافذة تسجيل الدخول قبل إتمام العملية' : 'Login popup was closed before completing';
+                } else if (error.code === 'auth/account-exists-with-different-credential') {
+                    errorMsg = currentLang === 'ar' ? 'يوجد حساب موجود بالفعل بنفس البريد الإلكتروني لكن بطريقة تسجيل مختلفة' : 'An account already exists with the same email but different sign-in method';
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    errorMsg = currentLang === 'ar' ? 'النطاق غير مصرح به. الرجاء إضافة نطاق موقعك في Firebase Console (Authorized domains).' : 'Domain not authorized. Please add your domain to Firebase Console (Authorized domains).';
+                } else {
+                    errorMsg = error.message;
+                }
+                showMessage(errorMsg);
+            }
         }
         
-        // تحديث اللغة من كائن الترجمات الموجود في الـ HTML (لنعد تعريفه)
-        window.updateUILanguage = (lang) => {
-            currentLang = lang;
-            // يمكن تحديث النصوص الثابتة في النماذج لو أردت (بسيطة)
-        };
+        // ربط أزرار Google
+        if (googleLoginBtn) googleLoginBtn.addEventListener('click', handleGoogleSignIn);
+        if (googleSignupBtn) googleSignupBtn.addEventListener('click', handleGoogleSignIn);
+        
+        window.updateUILanguage = (lang) => { currentLang = lang; };
     </script>
+    
     <style>
-        /* نفس الـ CSS السابق في login.html (يمكنك نسخه كما هو) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --deep-navy: #0A1128; --dark-slate: #121E3A; --pure-white: #FFFFFF; --off-white: #F8FAFE; --cool-gray: #EFF3F8; --slate-gray: #5A6E8A; --neon-blue: #2A6DFF; --vibrant-purple: #7B3FE4; --gradient-primary: linear-gradient(135deg, var(--neon-blue), var(--vibrant-purple)); --gradient-logo: linear-gradient(135deg, #2A6DFF, #9B4DFF); --shadow-sm: 0 12px 30px rgba(0, 0, 0, 0.05); --shadow-md: 0 20px 35px -10px rgba(0, 0, 0, 0.1); --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         body { font-family: 'Cairo', 'Tajawal', system-ui, sans-serif; background-color: var(--pure-white); color: var(--deep-navy); line-height: 1.5; overflow-x: hidden; }
@@ -171,8 +161,12 @@
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem 1.6rem; border-radius: 50px; font-weight: 600; transition: var(--transition-smooth); cursor: pointer; border: none; font-size: 0.95rem; text-decoration: none; }
         .btn-primary { background: var(--gradient-primary); color: white; box-shadow: 0 8px 18px rgba(42, 109, 255, 0.25); }
         .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(42, 109, 255, 0.35); }
-        .btn-outline { border: 2px solid var(--deep-navy); color: var(--deep-navy); background: transparent; }
-        .btn-outline:hover { background: var(--deep-navy); color: white; }
+        .btn-google { background: white; color: #444; border: 1px solid #ddd; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .btn-google:hover { background: #f5f5f5; transform: translateY(-2px); }
+        .btn-google img { width: 20px; height: 20px; margin-left: 8px; }
+        .divider { display: flex; align-items: center; text-align: center; margin: 1.5rem 0; color: var(--slate-gray); }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--cool-gray); }
+        .divider span { margin: 0 10px; font-size: 0.85rem; }
         header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); box-shadow: var(--shadow-sm); padding: 0.8rem 0; }
         .navbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
         .logo-area { display: flex; align-items: center; gap: 1rem; }
@@ -191,7 +185,7 @@
         .form-group input:focus { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(42,109,255,0.1); }
         .auth-btn { width: 100%; margin-top: 0.5rem; }
         .auth-footer { text-align: center; margin-top: 1.5rem; color: var(--slate-gray); }
-        .auth-footer a { color: var(--neon-blue); text-decoration: none; cursor: pointer; }
+        .auth-footer a { color: var(--neon-blue); text-decoration: none; cursor: pointer; font-weight: 600; }
         .message-box { display: none; padding: 0.8rem; border-radius: 28px; margin-bottom: 1rem; text-align: center; }
         footer { background: var(--dark-slate); color: #cfdfed; padding: 2.5rem 0 1.5rem; margin-top: 3rem; }
         .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem; }
@@ -235,6 +229,11 @@
             <!-- بطاقة تسجيل الدخول -->
             <div id="loginCard" class="auth-card">
                 <div id="authMessage" class="message-box"></div>
+                <!-- زر Google داخل بطاقة تسجيل الدخول -->
+                <button id="googleLoginBtn" class="btn btn-google auth-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> تسجيل الدخول عبر Google
+                </button>
+                <div class="divider"><span>أو</span></div>
                 <form id="loginForm">
                     <div class="form-group">
                         <label data-i18n="email_label">البريد الإلكتروني</label>
@@ -246,14 +245,18 @@
                     </div>
                     <button type="submit" class="btn btn-primary auth-btn" data-i18n="login_btn">تسجيل الدخول</button>
                     <div class="auth-footer">
-                        <p data-i18n="no_account">ليس لديك حساب؟ <a id="showSignup" style="cursor:pointer;" data-i18n="create_account">إنشاء حساب جديد</a></p>
+                        <p><span data-i18n="no_account">ليس لديك حساب؟</span> <a id="showSignup" style="cursor:pointer; font-weight:bold; text-decoration:underline;" data-i18n="create_account">إنشاء حساب جديد</a></p>
                     </div>
                 </form>
             </div>
 
-            <!-- بطاقة إنشاء حساب جديد (مخفية افتراضياً) -->
+            <!-- بطاقة إنشاء حساب جديد -->
             <div id="signupCard" class="auth-card" style="display: none;">
-                <div id="signupMessage" class="message-box"></div>
+                <!-- زر Google داخل بطاقة إنشاء الحساب -->
+                <button id="googleSignupBtn" class="btn btn-google auth-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> إنشاء حساب عبر Google
+                </button>
+                <div class="divider"><span>أو</span></div>
                 <form id="signupForm">
                     <div class="form-group">
                         <label data-i18n="email_label">البريد الإلكتروني</label>
@@ -269,7 +272,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary auth-btn" data-i18n="signup_btn">إنشاء حساب</button>
                     <div class="auth-footer">
-                        <p data-i18n="have_account">لديك حساب بالفعل؟ <a id="showLogin" style="cursor:pointer;" data-i18n="login_here">تسجيل الدخول</a></p>
+                        <p><span data-i18n="have_account">لديك حساب بالفعل؟</span> <a id="showLogin" style="cursor:pointer; font-weight:bold; text-decoration:underline;" data-i18n="login_here">تسجيل الدخول</a></p>
                     </div>
                 </form>
             </div>
@@ -298,7 +301,7 @@
     </footer>
 
     <script>
-        // ترجمات الصفحة (للكلمات الثابتة)
+        // ترجمات الواجهة
         const translations = {
             ar: {
                 nav_home: "الرئيسية", nav_about: "من نحن", nav_login: "تسجيل الدخول", nav_contact: "اتصل بنا", nav_cta: "اطلب ديمو مجاني",
@@ -317,23 +320,45 @@
                 copyright: "© 2026 Ordexa Platform – All rights reserved. Designed & developed by Eng. Rabie Elbaz."
             }
         };
+        
         let currentLang = 'ar';
         function updateLanguage(lang) {
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang] && translations[lang][key]) {
-                    if (el.tagName === 'A' && el.id === 'showSignup') el.innerText = translations[lang][key];
-                    else if (el.tagName === 'A' && el.id === 'showLogin') el.innerText = translations[lang][key];
-                    else el.innerText = translations[lang][key];
+                    if (el.tagName === 'A' && (el.id === 'showSignup' || el.id === 'showLogin')) {
+                        el.innerText = translations[lang][key];
+                    } else {
+                        el.innerText = translations[lang][key];
+                    }
                 }
             });
             document.body.classList.toggle('en', lang === 'en');
             document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
             document.getElementById('langToggleHeader').innerText = lang === 'ar' ? 'English' : 'العربية';
             currentLang = lang;
-            // إعلام الكود الخارجي (Firebase) بتغيير اللغة
             if (window.updateUILanguage) window.updateUILanguage(lang);
         }
+        
+        // وظيفة تبديل البطاقات
+        function toggleCards(showSignup) {
+            const loginCard = document.getElementById('loginCard');
+            const signupCard = document.getElementById('signupCard');
+            if (showSignup) {
+                loginCard.style.display = 'none';
+                signupCard.style.display = 'block';
+            } else {
+                signupCard.style.display = 'none';
+                loginCard.style.display = 'block';
+            }
+        }
+        
+        // ربط أزرار التبديل (تأكد من وجود العناصر)
+        const showSignupBtn = document.getElementById('showSignup');
+        const showLoginBtn = document.getElementById('showLogin');
+        if (showSignupBtn) showSignupBtn.onclick = () => toggleCards(true);
+        if (showLoginBtn) showLoginBtn.onclick = () => toggleCards(false);
+        
         document.getElementById('langToggleHeader').addEventListener('click', () => updateLanguage(currentLang === 'ar' ? 'en' : 'ar'));
         document.getElementById('mobileMenuToggle').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('show'));
         updateLanguage('ar');
