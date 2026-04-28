@@ -3,17 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Ordexa Platform | لوحة تحكم متكاملة</title>
-    <!-- Google Fonts + Icons (Material Symbols + Cairo/Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <title>Ordexa | لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-dark: #0B1120;
             --surface-dark: #111827;
@@ -24,76 +18,27 @@
             --text-light: #F1F5F9;
             --text-dim: #94A3B8;
             --border-dim: #334155;
-            --success: #22C55E;
-            --warning: #EAB308;
-            --danger: #EF4444;
-            --info: #3B82F6;
-            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.3), 0 8px 10px -6px rgba(0,0,0,0.2);
-            --shadow-sm: 0 4px 6px -2px rgba(0,0,0,0.2);
-            --transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-
         body {
-            font-family: 'Cairo', 'Inter', sans-serif;
+            font-family: 'Cairo', sans-serif;
             background: var(--bg-dark);
             color: var(--text-light);
             overflow-x: hidden;
         }
-
-        body.en {
-            direction: ltr;
-            font-family: 'Inter', 'Cairo', sans-serif;
-            text-align: left;
-        }
-
-        /* Loading Screen */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0B1120;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s;
-        }
-        .loading-screen.fade {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid rgba(37,99,235,0.2);
-            border-top: 4px solid var(--primary-blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Layout */
-        .dashboard {
-            display: flex;
-            min-height: 100vh;
-        }
-        /* Sidebar */
+        body.en { direction: ltr; font-family: 'Inter', sans-serif; }
+        .loading { position: fixed; inset: 0; background: #0B1120; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .spinner { width: 48px; height: 48px; border: 4px solid #1E293B; border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .dashboard { display: flex; min-height: 100vh; }
         .sidebar {
             width: 280px;
-            background: var(--surface-dark);
-            backdrop-filter: blur(4px);
-            border-left: 1px solid var(--border-dim);
-            transition: var(--transition);
             position: fixed;
+            background: var(--surface-dark);
             height: 100vh;
             overflow-y: auto;
+            border-left: 1px solid var(--border-dim);
+            transition: 0.3s;
             z-index: 100;
-            transform: translateX(0);
-        }
-        .sidebar.collapsed {
-            transform: translateX(100%);
         }
         .sidebar-header {
             padding: 1.5rem;
@@ -103,65 +48,32 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            border-bottom: 1px solid var(--border-dim);
-        }
-        .sidebar-nav {
-            padding: 1.2rem 0;
         }
         .nav-item {
             display: flex;
             align-items: center;
             gap: 0.8rem;
             padding: 0.8rem 1.5rem;
-            margin: 0.2rem 0;
             cursor: pointer;
-            transition: var(--transition);
+            transition: 0.2s;
             color: var(--text-dim);
-            font-weight: 500;
         }
-        .nav-item:hover, .nav-item.active {
-            background: rgba(37,99,235,0.15);
-            color: var(--primary-blue);
-            border-right: 3px solid var(--primary-blue);
-        }
-        .nav-item .material-symbols-outlined { font-size: 1.4rem; }
-
-        /* Main Content */
+        .nav-item.active, .nav-item:hover { background: #1E2A3A; color: var(--primary-blue); border-right: 3px solid var(--primary-blue); }
         .main-content {
             flex: 1;
             margin-right: 280px;
             padding: 1.5rem;
-            transition: var(--transition);
         }
-        .main-content.full-width {
-            margin-right: 0;
-        }
-
-        /* Top Header */
         .top-header {
             background: var(--surface-dark);
             border-radius: 28px;
             padding: 0.8rem 1.5rem;
-            margin-bottom: 2rem;
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 1rem;
-            box-shadow: var(--shadow-sm);
-        }
-        .logo-area h2 {
-            background: linear-gradient(115deg, #3B82F6, #A855F7);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            font-size: 1.5rem;
-        }
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
             flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
         .profile-circle {
             width: 42px;
@@ -172,35 +84,18 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.2rem;
         }
-        .lang-btn, .logout-btn, .icon-btn {
+        .lang-btn, .logout-btn {
             background: #1E293B;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 40px;
-            color: var(--text-light);
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .lang-btn:hover, .logout-btn:hover { background: var(--primary-blue); }
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
             color: white;
-            font-size: 1.8rem;
             cursor: pointer;
         }
-
-        /* Cards / Grids */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -208,25 +103,12 @@
             background: var(--card-bg);
             border-radius: 28px;
             padding: 1.2rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: var(--transition);
+            transition: 0.2s;
         }
-        .stat-card:hover { transform: translateY(-5px); background: #1E2A3A; box-shadow: var(--shadow-md); }
-        .stat-title { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.4rem; }
-        .stat-number { font-size: 2rem; font-weight: 800; }
-
-        .section-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin: 1.5rem 0 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .stat-card:hover { transform: translateY(-4px); background: #1E2A46; }
         .products-grid, .portfolio-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -234,10 +116,9 @@
             background: var(--card-bg);
             border-radius: 32px;
             padding: 1.2rem;
-            transition: var(--transition);
-            border: 1px solid transparent;
+            transition: 0.2s;
         }
-        .product-card:hover { transform: scale(1.02); border-color: var(--primary-blue); background: #1E2A46; }
+        .product-card:hover { transform: scale(1.02); border: 1px solid var(--primary-blue); }
         .badge {
             background: var(--primary-gold);
             color: #0B1120;
@@ -245,349 +126,252 @@
             border-radius: 60px;
             font-size: 0.7rem;
             font-weight: bold;
-            display: inline-block;
         }
-        .price { font-size: 1.5rem; font-weight: 800; margin: 0.6rem 0; }
-        .old-price { text-decoration: line-through; color: var(--text-dim); font-size: 0.8rem; margin-right: 8px; }
         .btn-subscribe {
             background: var(--primary-blue);
-            border: none;
             width: 100%;
             padding: 0.7rem;
             border-radius: 60px;
             font-weight: bold;
             color: white;
             cursor: pointer;
-            transition: var(--transition);
+            border: none;
         }
-        .btn-subscribe:hover { background: var(--accent-purple); transform: translateY(-2px); }
-
         table {
             width: 100%;
-            border-collapse: collapse;
             background: var(--card-bg);
             border-radius: 24px;
             overflow: hidden;
         }
-        th, td {
-            padding: 1rem;
-            text-align: right;
-            border-bottom: 1px solid var(--border-dim);
-        }
-        .status-complete { color: var(--success); font-weight: bold; }
-        .status-progress { color: var(--info); }
-        .status-pending { color: var(--warning); }
-        .status-cancel { color: var(--danger); }
-
-        .support-cards {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin: 1rem 0;
-        }
-        .support-btn {
-            background: #1E293B;
-            padding: 0.6rem 1.2rem;
-            border-radius: 60px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-        }
-
-        .countdown-timer {
-            background: linear-gradient(90deg, #2563EB, #8B5CF6);
-            padding: 0.5rem 1rem;
-            border-radius: 60px;
-            display: inline-block;
-            font-weight: bold;
-        }
-
-        .toast-notify {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #1E293B;
-            padding: 12px 24px;
-            border-radius: 60px;
-            color: white;
-            z-index: 1200;
-            opacity: 0;
-            transition: 0.2s;
-            pointer-events: none;
-        }
-
+        th, td { padding: 1rem; text-align: right; border-bottom: 1px solid var(--border-dim); }
+        .status-complete { color: #22C55E; }
+        .status-progress { color: #3B82F6; }
+        .status-pending { color: #F59E0B; }
+        .tab-pane { display: none; animation: fade 0.3s; }
+        .active-tab { display: block; }
+        .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
         @media (max-width: 768px) {
-            .sidebar { width: 260px; }
-            .main-content { margin-right: 0; }
-            .mobile-menu-btn { display: block; }
             .sidebar { transform: translateX(100%); }
             .sidebar.open { transform: translateX(0); }
+            .mobile-menu-btn { display: block; }
+            .main-content { margin-right: 0; }
         }
-        .tab-pane { display: none; animation: fadeIn 0.3s; }
-        .active-tab { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
-<div class="loading-screen" id="loadingScreen">
-    <div class="spinner"></div>
-</div>
-<div class="dashboard">
-    <!-- Sidebar -->
+<div class="loading" id="loading"><div class="spinner"></div></div>
+<div class="dashboard" id="dashboard" style="display: none;">
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">Ordexa ✦</div>
         <div class="sidebar-nav">
-            <div class="nav-item active" data-tab="dashboard"><span class="material-symbols-outlined">dashboard</span> <span data-i18n="nav_home">الرئيسية</span></div>
-            <div class="nav-item" data-tab="products"><span class="material-symbols-outlined">widgets</span> <span data-i18n="nav_products">منتجاتنا الرقمية</span></div>
-            <div class="nav-item" data-tab="orders"><span class="material-symbols-outlined">receipt</span> <span data-i18n="nav_orders">طلباتي</span></div>
-            <div class="nav-item" data-tab="invoices"><span class="material-symbols-outlined">description</span> <span data-i18n="nav_invoices">الفواتير</span></div>
-            <div class="nav-item" data-tab="support"><span class="material-symbols-outlined">support_agent</span> <span data-i18n="nav_support">الدعم الفني</span></div>
-            <div class="nav-item" data-tab="profile"><span class="material-symbols-outlined">account_circle</span> <span data-i18n="nav_profile">الحساب الشخصي</span></div>
-            <div class="nav-item" id="logoutSidebar"><span class="material-symbols-outlined">logout</span> <span data-i18n="nav_logout">تسجيل الخروج</span></div>
+            <div class="nav-item active" data-tab="dashboard"><span class="material-symbols-outlined">dashboard</span> الرئيسية</div>
+            <div class="nav-item" data-tab="products"><span class="material-symbols-outlined">widgets</span> منتجاتنا الرقمية</div>
+            <div class="nav-item" data-tab="orders"><span class="material-symbols-outlined">receipt</span> طلباتي</div>
+            <div class="nav-item" data-tab="invoices"><span class="material-symbols-outlined">description</span> الفواتير</div>
+            <div class="nav-item" data-tab="support"><span class="material-symbols-outlined">support_agent</span> الدعم الفني</div>
+            <div class="nav-item" data-tab="profile"><span class="material-symbols-outlined">account_circle</span> الحساب الشخصي</div>
+            <div class="nav-item" id="logoutSidebar"><span class="material-symbols-outlined">logout</span> تسجيل الخروج</div>
         </div>
     </aside>
-
-    <main class="main-content" id="mainContent">
+    <main class="main-content">
         <div class="top-header">
-            <div class="logo-area"><h2>Ordexa Platform</h2></div>
+            <div><h2 style="background:linear-gradient(115deg,#3B82F6,#A855F7); background-clip:text; -webkit-background-clip:text; color:transparent;">Ordexa Platform</h2></div>
             <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
-            <div class="header-actions">
-                <div class="profile-circle">أ</div>
-                <span data-i18n="welcome_user">مرحباً أحمد</span>
-                <button class="icon-btn" id="notifyBtn"><span class="material-symbols-outlined">notifications</span></button>
-                <button class="lang-btn" id="langToggleBtn">English</button>
-                <button class="logout-btn" id="logoutBtn"><span class="material-symbols-outlined">logout</span> <span data-i18n="nav_logout">خروج</span></button>
+            <div class="header-actions" style="display: flex; gap: 1rem; align-items: center;">
+                <div class="profile-circle" id="profileInitial">أ</div>
+                <span id="userNameDisplay"></span>
+                <button class="lang-btn" id="langToggle">English</button>
+                <button class="logout-btn" id="logoutBtn">خروج</button>
             </div>
         </div>
-
-        <!-- Banner + countdown -->
-        <div style="background: linear-gradient(120deg, #1E2A3A, #0F172A); border-radius: 32px; padding: 1rem 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-            <div><span class="material-symbols-outlined" style="color: #F59E0B;">local_fire_department</span> <strong data-i18n="offer_banner">خصومات حصرية هذا الشهر 🔥</strong></div>
-            <div class="countdown-timer" id="countdownTimer"></div>
-        </div>
-
-        <!-- Dashboard Tab -->
-        <div id="tab-dashboard" class="tab-pane active-tab">
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-title">📦 <span data-i18n="stat_orders_count">عدد الطلبات</span></div><div class="stat-number">5</div></div>
-                <div class="stat-card"><div class="stat-title">✅ <span data-i18n="stat_active_subs">الاشتراكات النشطة</span></div><div class="stat-number">2</div></div>
-                <div class="stat-card"><div class="stat-title">⏱️ <span data-i18n="stat_last_order">آخر طلب</span></div><div class="stat-number"><span data-i18n="today">اليوم</span></div></div>
-                <div class="stat-card"><div class="stat-title">⚡ <span data-i18n="stat_status">حالة الحساب</span></div><div class="stat-number" style="color:#22C55E;"><span data-i18n="active_status">مفعل</span></div></div>
-            </div>
-            <div class="section-title"><span class="material-symbols-outlined">work</span> <span data-i18n="latest_works">آخر الأعمال المنفذة</span></div>
-            <div class="portfolio-grid" id="portfolioGrid"></div>
-        </div>
-
-        <!-- Products Tab -->
-        <div id="tab-products" class="tab-pane">
-            <div class="section-title"><span class="material-symbols-outlined">sell</span> <span data-i18n="digital_products">منتجاتنا الرقمية</span></div>
-            <div class="products-grid" id="productsGrid"></div>
-        </div>
-
-        <!-- Orders Tab -->
-        <div id="tab-orders" class="tab-pane">
-            <div class="section-title"><span class="material-symbols-outlined">receipt_long</span> <span data-i18n="my_orders">طلباتي</span></div>
-            <table id="ordersTable"><thead><tr><th>#</th><th data-i18n="order_service">الخدمة</th><th data-i18n="order_date">التاريخ</th><th data-i18n="order_status">الحالة</th></tr></thead><tbody></tbody></table>
-        </div>
-
-        <!-- Invoices Tab -->
-        <div id="tab-invoices" class="tab-pane">
-            <div class="section-title"><span class="material-symbols-outlined">receipt</span> <span data-i18n="invoices_title">الفواتير</span></div>
-            <table id="invoicesTable"><thead><tr><th data-i18n="invoice_name">الفاتورة</th><th data-i18n="invoice_status">الحالة</th><th></th></tr></thead><tbody></tbody></table>
-        </div>
-
-        <!-- Support Tab -->
-        <div id="tab-support" class="tab-pane">
-            <div class="section-title"><span class="material-symbols-outlined">headset_mic</span> <span data-i18n="support_title">تحتاج مساعدة؟</span></div>
-            <div class="support-cards">
-                <div class="support-btn" id="whatsappBtn">💬 WhatsApp</div>
-                <div class="support-btn" id="messengerBtn">📘 Messenger</div>
-                <div class="support-btn" id="ticketBtn">🎫 <span data-i18n="support_ticket">إرسال تذكرة دعم</span></div>
-            </div>
-        </div>
-
-        <!-- Profile Tab -->
-        <div id="tab-profile" class="tab-pane">
-            <div class="section-title"><span class="material-symbols-outlined">settings</span> <span data-i18n="profile_title">الحساب الشخصي</span></div>
-            <div style="background: var(--card-bg); border-radius: 32px; padding: 1.5rem; max-width: 500px;">
-                <div class="form-group" style="margin-bottom: 1rem;"><label data-i18n="full_name">الاسم الكامل</label><input type="text" id="fullName" value="أحمد محمد" style="width:100%; padding:0.7rem; border-radius:28px; background:#1E293B; border:1px solid #334155; color:white;"></div>
-                <div class="form-group" style="margin-bottom: 1rem;"><label data-i18n="email">البريد الإلكتروني</label><input type="email" id="email" value="ahmed@ordexa.com" style="width:100%; padding:0.7rem; border-radius:28px; background:#1E293B; border:1px solid #334155; color:white;"></div>
-                <div class="form-group" style="margin-bottom: 1rem;"><label data-i18n="phone">رقم الهاتف</label><input type="tel" id="phone" value="+20123456789" style="width:100%; padding:0.7rem; border-radius:28px; background:#1E293B; border:1px solid #334155; color:white;"></div>
-                <div class="form-group" style="margin-bottom: 1rem;"><label data-i18n="change_password">تغيير كلمة المرور</label><input type="password" id="newPass" placeholder="********" style="width:100%; padding:0.7rem; border-radius:28px; background:#1E293B; border:1px solid #334155; color:white;"></div>
-                <button id="saveProfileBtn" class="btn-subscribe" style="width:auto; padding:0.7rem 1.5rem;"><span data-i18n="save_data">حفظ البيانات</span></button>
-            </div>
-        </div>
+        <div id="tab-dashboard" class="tab-pane active-tab">...</div>
+        <div id="tab-products" class="tab-pane">...</div>
+        <div id="tab-orders" class="tab-pane">...</div>
+        <div id="tab-invoices" class="tab-pane">...</div>
+        <div id="tab-support" class="tab-pane">...</div>
+        <div id="tab-profile" class="tab-pane">...</div>
     </main>
 </div>
-<div id="toastMsg" class="toast-notify">✨ تم الإجراء</div>
+<div id="toast" style="position:fixed; bottom:20px; left:20px; background:#1E293B; padding:10px 20px; border-radius:40px; opacity:0; transition:0.2s;"></div>
 
-<script>
-    // ---------- Translations ----------
-    const translations = {
-        ar: {
-            nav_home: "الرئيسية", nav_products: "منتجاتنا الرقمية", nav_orders: "طلباتي", nav_invoices: "الفواتير", nav_support: "الدعم الفني", nav_profile: "الحساب الشخصي", nav_logout: "تسجيل الخروج",
-            welcome_user: "مرحباً أحمد", stat_orders_count: "عدد الطلبات", stat_active_subs: "الاشتراكات النشطة", stat_last_order: "آخر طلب", stat_status: "حالة الحساب", today: "اليوم", active_status: "مفعل",
-            offer_banner: "خصومات حصرية هذا الشهر 🔥", latest_works: "آخر الأعمال المنفذة", digital_products: "منتجاتنا الرقمية",
-            my_orders: "طلباتي", order_service: "الخدمة", order_date: "التاريخ", order_status: "الحالة",
-            invoices_title: "الفواتير", invoice_name: "الفاتورة", invoice_status: "الحالة", pay_now: "ادفع الآن", paid: "مدفوعة", due: "مستحقة",
-            support_title: "تحتاج مساعدة؟", support_ticket: "إرسال تذكرة دعم", profile_title: "الحساب الشخصي", full_name: "الاسم الكامل", email: "البريد الإلكتروني", phone: "رقم الهاتف", change_password: "تغيير كلمة المرور", save_data: "حفظ البيانات",
-            product1_title: "منيو إلكتروني لمطعمك أو كافيهك", product1_desc: "اعرض كل منتجاتك وصورك داخل موقع احترافي سريع ومتوافق مع الهاتف.", product2_title: "منيو احترافي + استقبال الطلبات", product2_desc: "استقبل الأوردرات مباشرة على Telegram أو WhatsApp أو Gmail بسهولة تامة.",
-            product3_title: "Landing Page احترافية لمنتجك", product3_desc: "صفحة هبوط قوية لزيادة المبيعات لأي منتج رقمي أو فعلي.",
-            product4_title: "خدمة خاصة حسب طلبك", product4_desc: "اطلب أي موقع أو فكرة أو نظام مخصص لنشاطك التجاري.",
-            subscribe_now: "اشترك الآن", order_now: "اطلب الآن", most_requested: "الأكثر طلبًا", special_offer: "عرض خاص", pending_payment: "بانتظار الدفع", in_progress: "جاري التنفيذ", completed: "مكتمل", 
-        },
-        en: {
-            nav_home: "Home", nav_products: "Digital Products", nav_orders: "My Orders", nav_invoices: "Invoices", nav_support: "Support", nav_profile: "Profile", nav_logout: "Logout",
-            welcome_user: "Welcome Ahmed", stat_orders_count: "Total Orders", stat_active_subs: "Active Subs", stat_last_order: "Last Order", stat_status: "Account Status", today: "Today", active_status: "Active",
-            offer_banner: "Exclusive discounts this month 🔥", latest_works: "Latest Projects", digital_products: "Digital Products",
-            my_orders: "My Orders", order_service: "Service", order_date: "Date", order_status: "Status",
-            invoices_title: "Invoices", invoice_name: "Invoice", invoice_status: "Status", pay_now: "Pay Now", paid: "Paid", due: "Due",
-            support_title: "Need help?", support_ticket: "Submit Support Ticket", profile_title: "Profile", full_name: "Full Name", email: "Email", phone: "Phone", change_password: "Change Password", save_data: "Save Changes",
-            product1_title: "Digital Menu for Restaurant/Cafe", product1_desc: "Showcase all products & images in a fast, mobile-friendly website.",
-            product2_title: "Pro Menu + Order Reception", product2_desc: "Receive orders directly on Telegram, WhatsApp or Gmail easily.",
-            product3_title: "Professional Landing Page", product3_desc: "High-converting landing page for any digital or physical product.",
-            product4_title: "Custom Service", product4_desc: "Request any custom website, idea, or system for your business.",
-            subscribe_now: "Subscribe Now", order_now: "Order Now", most_requested: "Most Requested", special_offer: "Special Offer", pending_payment: "Pending payment", in_progress: "In progress", completed: "Completed",
-        }
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDoNUIF2bdo3Io7Ma3-mlFLhzRsM-kBoFM",
+        authDomain: "ordexa-platforma.firebaseapp.com",
+        projectId: "ordexa-platforma",
+        storageBucket: "ordexa-platforma.firebasestorage.app",
+        messagingSenderId: "443941203542",
+        appId: "1:443941203542:web:1db99037cfec361b2155f7",
+        measurementId: "G-CEGYC1BQPV"
     };
-    let currentLang = 'ar';
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    function updateLanguage(lang) {
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            let key = el.getAttribute('data-i18n');
-            if (translations[lang][key]) el.innerText = translations[lang][key];
-        });
-        document.body.classList.toggle('en', lang === 'en');
-        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-        document.getElementById('langToggleBtn').innerText = lang === 'ar' ? 'English' : 'العربية';
-        currentLang = lang;
-        renderProducts(); renderOrders(); renderInvoices(); renderPortfolio();
+    let currentUser = null;
+    let userData = {};
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) { window.location.href = 'login.html'; return; }
+        currentUser = user;
+        const userRef = doc(db, 'users', user.uid);
+        const snap = await getDoc(userRef);
+        if (snap.exists()) userData = snap.data();
+        else {
+            userData = { fullName: user.displayName || user.email.split('@')[0], email: user.email, phone: '', orders: [], invoices: [], activeProducts: [] };
+            await setDoc(userRef, userData);
+        }
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'flex';
+        document.getElementById('userNameDisplay').innerText = userData.fullName || 'عميل';
+        document.getElementById('profileInitial').innerText = (userData.fullName?.[0] || 'أ');
+        renderDashboardContent();
+        renderProducts();
+        renderOrders();
+        renderInvoices();
+        renderSupport();
+        renderProfile();
+    });
+
+    function renderDashboardContent() {
+        const container = document.getElementById('tab-dashboard');
+        container.innerHTML = `
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-title">📦 عدد الطلبات</div><div class="stat-number">${userData.orders?.length || 0}</div></div>
+                <div class="stat-card"><div class="stat-title">✅ الاشتراكات النشطة</div><div class="stat-number">${userData.activeProducts?.length || 0}</div></div>
+                <div class="stat-card"><div class="stat-title">⏱️ آخر طلب</div><div class="stat-number">${userData.lastOrderDate || 'اليوم'}</div></div>
+                <div class="stat-card"><div class="stat-title">⚡ حالة الحساب</div><div class="stat-number" style="color:#22C55E;">مفعل</div></div>
+            </div>
+            <div class="section-title"><span class="material-symbols-outlined">work</span> آخر الأعمال المنفذة</div>
+            <div class="portfolio-grid" id="portfolioGrid">
+                <div class="product-card">🌟 مطعم جريل هاوس – منيو إلكتروني + واتساب</div>
+                <div class="product-card">🚀 لاندينج بيج – زيادة مبيعات 45%</div>
+                <div class="product-card">🛍️ متجر أزياء – تكامل سلة ودفع</div>
+            </div>
+            <div style="background:linear-gradient(120deg,#1E2A3A,#0F172A); border-radius:32px; padding:1rem; margin-top:1rem; display:flex; justify-content:space-between;">
+                <span>🔥 خصومات حصرية هذا الشهر</span>
+                <span class="countdown">7 أيام متبقية</span>
+            </div>
+        `;
     }
 
-    // Data
-    const products = [
-        { id:1, title_key:'product1_title', desc_key:'product1_desc', price:300, oldPrice:550, badge_key:'most_requested', buttonKey:'subscribe_now', special:true },
-        { id:2, title_key:'product2_title', desc_key:'product2_desc', price:650, oldPrice:900, badge_key:'special_offer', buttonKey:'subscribe_now', special:false },
-        { id:3, title_key:'product3_title', desc_key:'product3_desc', price:200, oldPrice:350, badge_key:null, buttonKey:'subscribe_now', special:false },
-        { id:4, title_key:'product4_title', desc_key:'product4_desc', price:'حسب الطلب', oldPrice:null, badge_key:null, buttonKey:'order_now', special:false }
-    ];
-    const ordersData = [
-        { id:1025, service_key:'product1_title', date:'12/5/2026', status:'completed' },
-        { id:1026, service_key:'product3_title', date:'14/5/2026', status:'in_progress' },
-        { id:1027, service_key:'product4_title', date:'15/5/2026', status:'pending_payment' }
-    ];
-    const invoicesData = [
-        { name:'فاتورة مايو', status:'paid' },
-        { name:'فاتورة يونيو', status:'due' }
-    ];
-    const portfolioItems = [
-        { name:"🌟 مطعم جريل هاوس", desc:"منيو إلكتروني + واتساب" },
-        { name:"🚀 لاندينج بيج للتسويق", desc:"تحويل 45% زيادة مبيعات" },
-        { name:"🛍️ متجر أزياء", desc:"تكامل سلة ودفع" }
-    ];
-
     function renderProducts() {
-        const container = document.getElementById('productsGrid');
-        if(!container) return;
-        container.innerHTML = products.map(p => {
-            let badgeHtml = p.badge_key ? `<span class="badge">${translations[currentLang][p.badge_key] || p.badge_key}</span>` : '';
-            let priceHtml = typeof p.price === 'number' ? `${p.price} ج.م` : p.price;
-            let oldPriceHtml = p.oldPrice ? `<span class="old-price">${p.oldPrice} ج.م</span>` : '';
-            let btnText = translations[currentLang][p.buttonKey] || p.buttonKey;
-            return `<div class="product-card">
-                ${badgeHtml}
-                <h3>${translations[currentLang][p.title_key]}</h3>
-                <p style="color:#94A3B8; margin:8px 0">${translations[currentLang][p.desc_key]}</p>
-                <div class="price">${priceHtml} ${oldPriceHtml}</div>
-                <button class="btn-subscribe" data-product="${p.id}">${btnText}</button>
-            </div>`;
-        }).join('');
-        document.querySelectorAll('.btn-subscribe').forEach(btn => btn.addEventListener('click', (e) => { showToast(translations[currentLang]['subscribe_now'] + " ✅"); }));
+        const products = [
+            { name: "منيو إلكتروني لمطعمك أو كافيهك", desc: "اعرض كل منتجاتك وصورك داخل موقع احترافي.", price: "300 ج.م", old: "550 ج.م", badge: "الأكثر طلبًا" },
+            { name: "منيو احترافي + استقبال الطلبات", desc: "استقبل الأوردرات على واتساب، تليجرام، جيميل.", price: "650 ج.م", old: "900 ج.م", badge: "عرض خاص" },
+            { name: "Landing Page احترافية لمنتجك", desc: "صفحة هبوط قوية لزيادة المبيعات.", price: "200 ج.م", old: "350 ج.م", badge: null },
+            { name: "خدمة خاصة حسب طلبك", desc: "اطلب أي موقع أو فكرة مخصصة لنشاطك.", price: "حسب الطلب", old: null, badge: null }
+        ];
+        document.getElementById('tab-products').innerHTML = `
+            <div class="section-title"><span class="material-symbols-outlined">sell</span> منتجاتنا الرقمية</div>
+            <div class="products-grid">${products.map(p => `
+                <div class="product-card">
+                    ${p.badge ? `<span class="badge">${p.badge}</span>` : ''}
+                    <h3>${p.name}</h3>
+                    <p style="margin:8px 0; color:#94A3B8;">${p.desc}</p>
+                    <div class="price">${p.price} ${p.old ? `<span class="old-price">${p.old}</span>` : ''}</div>
+                    <button class="btn-subscribe" data-prod="${p.name}">اشترك الآن</button>
+                </div>`).join('')}</div>
+        `;
+        document.querySelectorAll('.btn-subscribe').forEach(btn => btn.addEventListener('click', () => showToast("تم إرسال طلب الاشتراك ✅")));
     }
 
     function renderOrders() {
-        const tbody = document.querySelector('#ordersTable tbody');
-        if(!tbody) return;
-        tbody.innerHTML = ordersData.map(o => {
-            let statusClass = '', statusText = '';
-            if(o.status === 'completed') { statusClass='status-complete'; statusText = translations[currentLang].completed; }
-            else if(o.status === 'in_progress') { statusClass='status-progress'; statusText = translations[currentLang].in_progress; }
-            else { statusClass='status-pending'; statusText = translations[currentLang].pending_payment; }
-            let serviceName = translations[currentLang][o.service_key] || o.service_key;
-            return `<tr><td>#${o.id}</td><td>${serviceName}</td><td>${o.date}</td><td class="${statusClass}">${statusText}</td></tr>`;
-        }).join('');
+        const orders = userData.orders?.length ? userData.orders : [
+            { id: 1025, service: "منيو إلكتروني", date: "12/5/2026", status: "completed" },
+            { id: 1026, service: "لاندينج بيدج", date: "14/5/2026", status: "in_progress" },
+            { id: 1027, service: "خدمة خاصة", date: "15/5/2026", status: "pending_payment" }
+        ];
+        let rows = '';
+        orders.forEach(o => {
+            let statusClass = o.status === 'completed' ? 'status-complete' : (o.status === 'in_progress' ? 'status-progress' : 'status-pending');
+            let statusText = o.status === 'completed' ? 'مكتمل' : (o.status === 'in_progress' ? 'جاري التنفيذ' : 'بانتظار الدفع');
+            rows += `<tr><td>#${o.id}</td><td>${o.service}</td><td>${o.date}</td><td class="${statusClass}">${statusText}</td></tr>`;
+        });
+        document.getElementById('tab-orders').innerHTML = `
+            <div class="section-title"><span class="material-symbols-outlined">receipt_long</span> طلباتي</div>
+            <table><thead><tr><th>#</th><th>الخدمة</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody>${rows}</tbody></table>
+        `;
     }
 
     function renderInvoices() {
-        const tbody = document.querySelector('#invoicesTable tbody');
-        if(!tbody) return;
-        tbody.innerHTML = invoicesData.map(inv => {
-            let statusText = inv.status === 'paid' ? translations[currentLang].paid : translations[currentLang].due;
+        const invoices = userData.invoices?.length ? userData.invoices : [
+            { name: "فاتورة مايو", status: "paid" },
+            { name: "فاتورة يونيو", status: "due" }
+        ];
+        let rows = '';
+        invoices.forEach(inv => {
+            let statusText = inv.status === 'paid' ? 'مدفوعة' : 'مستحقة';
             let statusColor = inv.status === 'paid' ? '#22C55E' : '#F59E0B';
-            let btnText = translations[currentLang].pay_now;
-            return `<tr><td>${inv.name}</td><td style="color:${statusColor}">${statusText}</td><td><button class="pay-btn" style="background:#2563EB; border:none; padding:0.3rem 0.8rem; border-radius:40px; cursor:pointer;">${btnText}</button></td></tr>`;
-        }).join('');
-        document.querySelectorAll('.pay-btn').forEach(btn => btn.addEventListener('click', () => showToast("🔁 محاكاة الدفع")));
+            rows += `<tr><td>${inv.name}</td><td style="color:${statusColor}">${statusText}</td><td><button class="pay-btn" style="background:#2563EB; border:none; padding:0.3rem 1rem; border-radius:40px; cursor:pointer;">ادفع الآن</button></td></tr>`;
+        });
+        document.getElementById('tab-invoices').innerHTML = `
+            <div class="section-title"><span class="material-symbols-outlined">receipt</span> الفواتير</div>
+            <table>${rows}</table>
+        `;
+        document.querySelectorAll('.pay-btn').forEach(btn => btn.addEventListener('click', () => showToast("محاكاة الدفع")));
     }
 
-    function renderPortfolio() {
-        const grid = document.getElementById('portfolioGrid');
-        if(grid) {
-            grid.innerHTML = portfolioItems.map(p => `<div class="product-card" style="text-align:center;"><h3>${p.name}</h3><p>${p.desc}</p></div>`).join('');
-        }
+    function renderSupport() {
+        document.getElementById('tab-support').innerHTML = `
+            <div class="section-title"><span class="material-symbols-outlined">support_agent</span> تحتاج مساعدة؟</div>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem;">
+                <div class="support-btn" id="waBtn">💬 WhatsApp</div>
+                <div class="support-btn" id="msgBtn">📘 Messenger</div>
+                <div class="support-btn" id="ticketBtn">🎫 إرسال تذكرة دعم</div>
+            </div>
+        `;
+        document.getElementById('waBtn')?.addEventListener('click', () => showToast("جاري الاتصال بالدعم عبر واتساب"));
+        document.getElementById('msgBtn')?.addEventListener('click', () => showToast("جاري الاتصال عبر ماسنجر"));
+        document.getElementById('ticketBtn')?.addEventListener('click', () => showToast("تم فتح تذكرة دعم جديدة"));
     }
 
-    let countdownInterval;
-    function startCountdown(targetDate = new Date().getTime() + 7*24*60*60*1000) {
-        const timerElem = document.getElementById('countdownTimer');
-        const update = () => {
-            const now = new Date().getTime();
-            const diff = targetDate - now;
-            if(diff <= 0) { timerElem.innerText = "العرض انتهى"; clearInterval(countdownInterval); return; }
-            const days = Math.floor(diff / (1000*60*60*24));
-            const hours = Math.floor((diff % (86400000))/3600000);
-            timerElem.innerText = `${days} يوم ${hours} ساعة`;
-        };
-        update();
-        countdownInterval = setInterval(update, 3600000);
+    function renderProfile() {
+        document.getElementById('tab-profile').innerHTML = `
+            <div class="section-title"><span class="material-symbols-outlined">settings</span> الحساب الشخصي</div>
+            <div style="background:#1E293B; border-radius:32px; padding:1.5rem; max-width:500px;">
+                <div><label>الاسم الكامل</label><input type="text" id="fullName" value="${userData.fullName || ''}" style="width:100%; padding:0.7rem; border-radius:28px; background:#0F172A; border:1px solid #334155; color:white;"></div>
+                <div><label>البريد الإلكتروني</label><input type="email" id="email" value="${userData.email || currentUser.email}" style="width:100%; padding:0.7rem; border-radius:28px; background:#0F172A; color:white;"></div>
+                <div><label>رقم الهاتف</label><input type="tel" id="phone" value="${userData.phone || ''}" style="width:100%; padding:0.7rem; border-radius:28px; background:#0F172A;"></div>
+                <div><label>تغيير كلمة المرور</label><input type="password" id="password" placeholder="******" style="width:100%; padding:0.7rem; border-radius:28px;"></div>
+                <button id="saveProfile" class="btn-subscribe" style="width:auto; margin-top:1rem;">حفظ البيانات</button>
+            </div>
+        `;
+        document.getElementById('saveProfile')?.addEventListener('click', async () => {
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            await setDoc(doc(db, 'users', currentUser.uid), { fullName, phone, email: currentUser.email }, { merge: true });
+            showToast("تم تحديث الملف الشخصي");
+            location.reload();
+        });
     }
 
     function showToast(msg) {
-        const toast = document.getElementById('toastMsg');
+        const toast = document.getElementById('toast');
         toast.innerText = msg;
         toast.style.opacity = '1';
         setTimeout(() => toast.style.opacity = '0', 2000);
     }
 
-    // Tabs & Sidebar
     const tabs = ['dashboard', 'products', 'orders', 'invoices', 'support', 'profile'];
-    function switchTab(tabId) {
+    document.querySelectorAll('.nav-item[data-tab]').forEach(el => el.addEventListener('click', () => {
+        const tab = el.getAttribute('data-tab');
         tabs.forEach(t => document.getElementById(`tab-${t}`).classList.remove('active-tab'));
-        document.getElementById(`tab-${tabId}`).classList.add('active-tab');
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        document.querySelector(`.nav-item[data-tab="${tabId}"]`).classList.add('active');
-    }
-    document.querySelectorAll('.nav-item[data-tab]').forEach(el => {
-        el.addEventListener('click', () => switchTab(el.getAttribute('data-tab')));
-    });
-    document.getElementById('logoutBtn')?.addEventListener('click', () => { showToast("تسجيل الخروج التجريبي"); window.location.reload(); });
-    document.getElementById('logoutSidebar')?.addEventListener('click', () => { showToast("تسجيل الخروج"); });
-    document.getElementById('notifyBtn')?.addEventListener('click', () => showToast("🔔 لديك طلب جديد قيد التنفيذ"));
-    document.getElementById('langToggleBtn').addEventListener('click', () => updateLanguage(currentLang === 'ar' ? 'en' : 'ar'));
-    document.getElementById('mobileMenuBtn').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
-    document.getElementById('saveProfileBtn')?.addEventListener('click', () => showToast(translations[currentLang].save_data + " ✅"));
-    document.querySelectorAll('.support-btn').forEach(btn => btn.addEventListener('click', () => showToast("🚀 جاري التواصل مع الدعم")));
+        document.getElementById(`tab-${tab}`).classList.add('active-tab');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+    }));
+    document.getElementById('logoutBtn')?.addEventListener('click', () => { signOut(auth); window.location.href = 'login.html'; });
+    document.getElementById('logoutSidebar')?.addEventListener('click', () => { signOut(auth); window.location.href = 'login.html'; });
+    document.getElementById('langToggle')?.addEventListener('click', () => document.body.classList.toggle('en'));
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
 
-    window.addEventListener('load', () => {
-        document.getElementById('loadingScreen').classList.add('fade');
-        setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 500);
-        updateLanguage('ar');
-        renderProducts(); renderOrders(); renderInvoices(); renderPortfolio();
-        startCountdown();
-        // إشعار وهمي
-        setTimeout(() => showToast("لديك طلب جديد قيد التنفيذ 🚀"), 2000);
-    });
+    window.showToast = showToast;
 </script>
 </body>
-</html>
+    </html>
