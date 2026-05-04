@@ -1,1 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ordexa | إنشاء حساب جديد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, #f8fafc 0%, #eef2ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .auth-card {
+            max-width: 480px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 30px 50px -20px rgba(0,0,0,0.2);
+            padding: 2rem 2rem 2.5rem;
+            transition: transform 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .logo {
+            text-align: center;
+            font-size: 2.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .sub {
+            text-align: center;
+            color: #475569;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .input-group i {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+        input {
+            width: 100%;
+            padding: 14px 48px 14px 20px;
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 60px;
+            transition: all 0.2s;
+            background: #ffffff;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(105deg, #2563eb, #4f46e5);
+            border: none;
+            color: white;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.5rem;
+            font-family: inherit;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -8px #2563eb;
+        }
+        .footer-link {
+            text-align: center;
+            margin-top: 1.8rem;
+            font-size: 0.9rem;
+        }
+        .footer-link a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .error-msg {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 10px 16px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .success-msg {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        @media (max-width: 520px) {
+            body { padding: 1rem; }
+            .auth-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="auth-card">
+    <div class="logo">Ordexa</div>
+    <h2>إنشاء حساب جديد</h2>
+    <div class="sub">سجّل للوصول إلى لوحة التحكم الذكية</div>
 
+    <div id="errorMessage" class="error-msg" style="display: none;"></div>
+
+    <form id="registerForm">
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="name" placeholder="الاسم الكامل" required autocomplete="name">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="البريد الإلكتروني" required autocomplete="email">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="كلمة المرور (6 أحرف على الأقل)" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn-primary" id="signupBtn">إنشاء حساب <i class="fas fa-arrow-left"></i></button>
+    </form>
+    <div class="footer-link">
+        لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a>
+    </div>
+</div>
+
+<script type="module">
+    import { initFirebase, signUpWithEmail } from './auth.js';
+
+    // initialize Firebase once
+    initFirebase();
+
+    const form = document.getElementById('registerForm');
+    const errorDiv = document.getElementById('errorMessage');
+    const submitBtn = document.getElementById('signupBtn');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorDiv.style.display = 'none';
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!name || !email || !password) {
+            showError('يرجى ملء جميع الحقول');
+            return;
+        }
+        if (password.length < 6) {
+            showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'جاري إنشاء الحساب...';
+
+        try {
+            await signUpWithEmail(email, password, name);
+            // signUpWithEmail handles saving to firestore and auto sign-in
+            window.location.href = 'dashboard.html';
+        } catch (err) {
+            let friendlyMsg = err.message;
+            if (friendlyMsg.includes('email-already-in-use')) friendlyMsg = 'البريد الإلكتروني مستخدم بالفعل. الرجاء تسجيل الدخول.';
+            else if (friendlyMsg.includes('weak-password')) friendlyMsg = 'كلمة المرور ضعيفة جداً. استخدم 6 أحرف أو أكثر.';
+            showError(friendlyMsg);
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'إنشاء حساب';
+        }
+    });
+
+    function showError(msg) {
+        errorDiv.innerText = msg;
+        errorDiv.style.display = 'block';
+    }
+</script>
+</body>
+  </html>
