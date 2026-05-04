@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordexa | لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #f1f5f9;
+        }
+        .app-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: white;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-name {
+            font-weight: 600;
+            background: #eef2ff;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .logout-btn:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+        .dashboard-content {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex:1;
+        }
+        .welcome-card {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .welcome-card h1 {
+            font-size: 2rem;
+            color: #0f172a;
+            margin-bottom: 0.75rem;
+        }
+        .badge {
+            background: linear-gradient(115deg, #2563eb10, #a855f710);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-weight: 500;
+        }
+        .features-mini {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .card-mini {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid #eef2ff;
+        }
+        .card-mini i {
+            font-size: 2rem;
+            color: #2563eb;
+            margin-bottom: 0.8rem;
+        }
+        @media (max-width: 680px) {
+            header { flex-direction: column; text-align: center; }
+            .welcome-card h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-wrapper">
+    <header>
+        <div class="logo">Ordexa</div>
+        <div class="user-area">
+            <span class="user-name" id="displayUserName">مرحباً</span>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> خروج</button>
+        </div>
+    </header>
+    <div class="dashboard-content">
+        <div class="welcome-card">
+            <h1 id="welcomeMessage">مرحباً بك في منصة Ordexa</h1>
+            <div class="badge">📊 حساب مُفعّل بالكامل</div>
+            <p style="margin-top: 1rem; color: #334155;">يمكنك الآن إدارة منيو مطعمك، مراقبة الطلبات، واستخدام لوحة التحكم الذكية.</p>
+        </div>
+        <div class="features-mini">
+            <div class="card-mini"><i class="fas fa-qrcode"></i><h3>منيو ديناميكي</h3><p>تحكم فوري بالأصناف</p></div>
+            <div class="card-mini"><i class="fas fa-chart-simple"></i><h3>إحصائيات لحظية</h3><p>تقارير المبيعات</p></div>
+            <div class="card-mini"><i class="fas fa-users"></i><h3>إدارة العملاء</h3><p>قاعدة بيانات ذكية</p></div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initFirebase, getCurrentUser, logout, getUserDataFromFirestore } from './auth.js';
+    initFirebase();
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    const welcomeMsg = document.getElementById('welcomeMessage');
+    const userNameSpan = document.getElementById('displayUserName');
+
+    // Check authentication state
+    const user = getCurrentUser();
+    if (!user) {
+        window.location.href = 'login.html';
+    } else {
+        // Load user name from Firestore (or fallback to email)
+        const loadProfile = async () => {
+            try {
+                const userData = await getUserDataFromFirestore(user.uid);
+                if (userData && userData.name) {
+                    userNameSpan.innerText = `مرحباً ${userData.name}`;
+                    welcomeMsg.innerText = `أهلاً ${userData.name}، لوحة تحكم مطعمك في انتظارك!`;
+                } else {
+                    userNameSpan.innerText = user.displayName || user.email;
+                    welcomeMsg.innerText = `مرحباً ${user.displayName || user.email}`;
+                }
+            } catch (err) {
+                console.warn(err);
+                userNameSpan.innerText = user.email || 'مستخدم';
+            }
+        };
+        loadProfile();
+    }
+
+    logoutBtn.addEventListener('click', async () => {
+        await logout();
+        window.location.href = 'login.html';
+    });
+</script>
+</body>
+</html>
+<script src="js/auth.js"></script>
